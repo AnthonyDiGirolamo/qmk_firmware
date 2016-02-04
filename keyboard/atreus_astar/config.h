@@ -24,13 +24,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VENDOR_ID       0xFEED
 #define PRODUCT_ID      0x6060
 #define DEVICE_VER      0x0001
-#define MANUFACTURER    You
-#define PRODUCT         atreus_astar
-#define DESCRIPTION     A custom keyboard
+#define MANUFACTURER    technomancy
+#define PRODUCT         Atreus
+#define DESCRIPTION     t.m.k. keyboard firmware for Atreus
 
 /* key matrix size */
-#define MATRIX_ROWS 2
-#define MATRIX_COLS 3
+#define MATRIX_ROWS 4
+#define MATRIX_COLS 11
 
 // Planck PCB default pin-out
 // Change this to how you wired your keyboard
@@ -39,26 +39,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ROWS (int []){ D0, D5 }
 
 /* COL2ROW or ROW2COL */
-#define DIODE_DIRECTION COL2ROW
+#define DIODE_DIRECTION COL2RO
 
 /* define if matrix has ghost */
 //#define MATRIX_HAS_GHOST
-
-/* number of backlight levels */
-#define BACKLIGHT_LEVELS 3
 
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE    5
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
-#define LOCKING_SUPPORT_ENABLE
+// #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
-#define LOCKING_RESYNC_ENABLE
+// #define LOCKING_RESYNC_ENABLE
 
 /* key combination for command */
 #define IS_COMMAND() ( \
     keyboard_report->mods == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT)) \
 )
+
+
 
 /*
  * Feature disable options
@@ -77,5 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_ONESHOT
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
+
+#define TAPPING_TOGGLE 3
 
 #endif
