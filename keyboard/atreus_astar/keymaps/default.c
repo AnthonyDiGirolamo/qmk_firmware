@@ -43,9 +43,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // 4: mouse and macros
   KEYMAP(
-         KC_FN11,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO, \
+         KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO, \
          KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO, \
-         KC_NO,    KC_NO,    KC_FN12,  KC_BTN3,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
+         KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
          KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8)
 };
 
