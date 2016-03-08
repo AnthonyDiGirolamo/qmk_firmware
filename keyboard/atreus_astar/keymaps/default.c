@@ -3,9 +3,6 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // 0: colemak
-  // Q  W  E  R  T      Y  U  I     O    P
-  // A  S  D  F  G      H  J  K     L    SCLN
-  // Z  X  C  V  B      N  M  COMM  DOT  SLSH
 
   KEYMAP(
          KC_Q,    KC_W,     KC_F,    KC_P,    KC_G,    /*       */       KC_J,    KC_L,    KC_U,     KC_Y,     KC_SCLN,  \
@@ -13,7 +10,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_K,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
          KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),  \
 
-  // 1: punctuation and numbers
+  // 1: qwerty
+  // Q  W  E  R  T      Y  U  I     O    P
+  // A  S  D  F  G      H  J  K     L    SCLN
+  // Z  X  C  V  B      N  M  COMM  DOT  SLSH
+
+  KEYMAP(
+         KC_Q,    KC_W,     KC_E,    KC_R,    KC_T,    /*       */       KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     \
+         KC_A,    KC_S,     KC_D,    KC_F,    KC_G,    /*       */       KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  \
+         KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
+         KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),  \
+
+
+  // 2: punctuation and numbers
   // *7890  |[]#!
   // +456~  @()^$
   // =123`  &{}%\
@@ -25,18 +34,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_EQL,     KC_1,  KC_2,    KC_3,     KC_GRAVE,     /*        */        S(KC_7),     S(KC_LBRC),  S(KC_RBRC),  S(KC_5),     KC_BSLS,   \
          KC_TRNS,    KC_0,  KC_DOT,  KC_TRNS,  KC_TRNS,      KC_TRNS,  KC_TRNS,  KC_TRNS,     KC_TRNS,     S(KC_MINS),  S(KC_QUOT),  KC_TRNS),  \
 
-  // 2: arrows and function keys
+  // 3: arrows and function keys
   KEYMAP(
          KC_INS,   KC_F7,    KC_F8,    KC_F9,    KC_F10,   /*        */        KC_HOME,  KC_RGHT,  KC_END,   KC_PGUP,  KC_PSCR,   \
          KC_DEL,   KC_F4,    KC_F5,    KC_F6,    KC_F11,   /*        */        KC_LEFT,  KC_DOWN,  KC_UP,    KC_PGDN,  KC_PAUSE,  \
          KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
          KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_FN2),
 
-  // 3: mouse and macros
+  // 4: mouse and macros
   KEYMAP(
-         KC_NO,    KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO, \
+         KC_FN11,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO, \
          KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO, \
-         KC_NO,    KC_FN9,   KC_NO,    KC_BTN3,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
+         KC_NO,    KC_NO,    KC_FN12,  KC_BTN3,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
          KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8)
 };
 
@@ -139,17 +148,19 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 const uint16_t PROGMEM fn_actions[] = {
   /* [0] = ACTION_LAYER_TAP_TOGGLE(1), */
   /* [1] = ACTION_LAYER_TAP_TOGGLE(2), */
-  [0] = ACTION_LAYER_MOMENTARY(1),
-  [1] = ACTION_LAYER_MOMENTARY(2),
+  [0] = ACTION_LAYER_MOMENTARY(2),
+  [1] = ACTION_LAYER_MOMENTARY(3),
   [2] = ACTION_FUNCTION(BOOTLOADER),
   [3] = ACTION_MODS_TAP_KEY(MOD_LCTL, KC_ESC),
   [4] = ACTION_MODS_TAP_KEY(MOD_LALT, KC_ENT),
   [5] = ACTION_MODS_TAP_KEY(MOD_RSFT, KC_SPC),
   [6] = ACTION_MODS_TAP_KEY(MOD_LSFT, KC_BSPC),
   [7] = ACTION_MODS_TAP_KEY(MOD_LGUI|MOD_LCTL|MOD_LALT, KC_ESC),
-  [8] = ACTION_LAYER_TAP_KEY(3, KC_ENT),
+  [8] = ACTION_LAYER_TAP_KEY(4, KC_ENT),
   [9] = ACTION_MACRO(GITCOMMIT),
   [10] = ACTION_MACRO(ECHOH),
+  [11] = ACTION_DEFAULT_LAYER_SET(0),
+  [12] = ACTION_DEFAULT_LAYER_SET(1),
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
