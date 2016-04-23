@@ -1,58 +1,80 @@
 #include "atreus_astar.h"
+#include "action_layer.h"
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
-  // 0: colemak
-
-  KEYMAP(
-         KC_Q,    KC_W,     KC_F,    KC_P,    KC_G,    /*       */       KC_J,    KC_L,    KC_U,     KC_Y,     KC_SCLN,  \
-         KC_A,    KC_R,     KC_S,    KC_T,    KC_D,    /*       */       KC_H,    KC_N,    KC_E,     KC_I,     KC_O,     \
-         KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_K,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
-         KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),  \
-
-  // 1: qwerty
-  // Q  W  E  R  T      Y  U  I     O    P
-  // A  S  D  F  G      H  J  K     L    SCLN
-  // Z  X  C  V  B      N  M  COMM  DOT  SLSH
-
-  KEYMAP(
-         KC_Q,    KC_W,     KC_E,    KC_R,    KC_T,    /*       */       KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     \
-         KC_A,    KC_S,     KC_D,    KC_F,    KC_G,    /*       */       KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  \
-         KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
-         KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),  \
-
-
-  // 2: punctuation and numbers
-  // *7890  |[]#!
-  // +456~  @()^$
-  // =123`  &{}%\
-  //  0.      -'
-
-  KEYMAP(
-         S(KC_8),    KC_7,  KC_8,    KC_9,     KC_0,         /*        */        S(KC_BSLS),  KC_LBRC,     KC_RBRC,     S(KC_3),     S(KC_1),   \
-         S(KC_EQL),  KC_4,  KC_5,    KC_6,     S(KC_GRAVE),  /*        */        S(KC_2),     S(KC_9),     S(KC_0),     S(KC_6),     S(KC_4),   \
-         KC_EQL,     KC_1,  KC_2,    KC_3,     KC_GRAVE,     /*        */        S(KC_7),     S(KC_LBRC),  S(KC_RBRC),  S(KC_5),     KC_BSLS,   \
-         KC_TRNS,    KC_0,  KC_DOT,  KC_TRNS,  KC_TRNS,      KC_TRNS,  KC_TRNS,  KC_TRNS,     KC_TRNS,     S(KC_MINS),  S(KC_QUOT),  KC_TRNS),  \
-
-  // 3: arrows and function keys
-  KEYMAP(
-         KC_INS,   KC_F7,    KC_F8,    KC_F9,    KC_F10,   /*        */        KC_HOME,  KC_RGHT,  KC_END,   KC_PGUP,  KC_PSCR,   \
-         KC_DEL,   KC_F4,    KC_F5,    KC_F6,    KC_F11,   /*        */        KC_LEFT,  KC_DOWN,  KC_UP,    KC_PGDN,  KC_PAUSE,  \
-         KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
-         KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_FN2),
-
-  // 4: mouse and macros
-  KEYMAP(
-         KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO, \
-         KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO, \
-         KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-         KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8)
+enum layer_id {
+  LAYER_COLEMAK,
+  LAYER_QWERTY,
+  LAYER_SYMBOLS,
+  LAYER_FNARROWS,
+  LAYER_MOUSEMACRO,
+  LAYER_NORMAL_MODE,
+  LAYER_DELETE_MOTION,
 };
 
 enum macro_id {
   ECHOH,
   SHUFFLEFILES,
   GITCOMMIT,
+  DELETELINE,
+};
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
+[LAYER_COLEMAK] = KEYMAP(
+  KC_Q,    KC_W,     KC_F,    KC_P,    KC_G,    /*       */       KC_J,    KC_L,    KC_U,     KC_Y,     KC_SCLN,  \
+  KC_A,    KC_R,     KC_S,    KC_T,    KC_D,    /*       */       KC_H,    KC_N,    KC_E,     KC_I,     KC_O,     \
+  KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_K,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
+  KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),
+
+// Q  W  E  R  T      Y  U  I     O    P
+// A  S  D  F  G      H  J  K     L    SCLN
+// Z  X  C  V  B      N  M  COMM  DOT  SLSH
+
+[LAYER_QWERTY] = KEYMAP(
+  KC_Q,    KC_W,     KC_E,    KC_R,    KC_T,    /*       */       KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     \
+  KC_A,    KC_S,     KC_D,    KC_F,    KC_G,    /*       */       KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  \
+  KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
+  KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),
+
+// * 7 8 9 0  | [ ] # !
+// + 4 5 6 ~  @ ( ) ^ $
+// = 1 2 3 `  & { } % BSLASH
+//   0 .          - '
+
+[LAYER_SYMBOLS] = KEYMAP(
+  S(KC_8),    KC_7,  KC_8,    KC_9,     KC_0,         /*        */        S(KC_BSLS),  KC_LBRC,     KC_RBRC,     S(KC_3),     S(KC_1),  \
+  S(KC_EQL),  KC_4,  KC_5,    KC_6,     S(KC_GRAVE),  /*        */        S(KC_2),     S(KC_9),     S(KC_0),     S(KC_6),     S(KC_4),  \
+  KC_EQL,     KC_1,  KC_2,    KC_3,     KC_GRAVE,     /*        */        S(KC_7),     S(KC_LBRC),  S(KC_RBRC),  S(KC_5),     KC_BSLS,  \
+  KC_TRNS,    KC_0,  KC_DOT,  KC_TRNS,  KC_TRNS,      KC_TRNS,  KC_TRNS,  KC_TRNS,     KC_TRNS,     S(KC_MINS),  S(KC_QUOT),  KC_TRNS),
+
+[LAYER_FNARROWS] = KEYMAP(
+  KC_INS,   KC_F7,    KC_F8,    KC_F9,    KC_F10,   /*        */        KC_HOME,  KC_RGHT,  KC_END,   KC_PGUP,  KC_PSCR,   \
+  KC_DEL,   KC_F4,    KC_F5,    KC_F6,    KC_F11,   /*        */        KC_LEFT,  KC_DOWN,  KC_UP,    KC_PGDN,  KC_PAUSE,  \
+  KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
+  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_FN2),
+
+[LAYER_MOUSEMACRO] = KEYMAP(
+  KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
+  KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*                      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
+  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8),
+
+//  Q  W     E  R  T  |  Y  >  Undo  O    P
+//  A  Redo  D  F  G  |  <  v  ^     L    SCLN
+//  Z  X     C  V  B  |  N  M  COMM  DOT  SLSH
+
+[LAYER_NORMAL_MODE] = KEYMAP(
+  KC_NO,    KC_NO,       KC_NO,  KC_NO,  KC_NO,                    /*      */      KC_NO,    KC_RIGHT,  LCTL(KC_Z),  KC_NO,              KC_NO,  \
+  KC_NO,    LCTL(KC_Y),  KC_NO,  KC_NO,  TG(LAYER_DELETE_MOTION),  /*      */      KC_LEFT,  KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  KC_NO,  \
+  KC_NO,    KC_NO,       KC_NO,  KC_NO,  KC_NO,                    /*      */      KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_NO,  \
+  KC_TRNS,  KC_NO,       KC_NO,  KC_NO,  KC_NO,                    KC_NO,  KC_NO,  KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+
+[LAYER_DELETE_MOTION] = KEYMAP(
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          TG(LAYER_DELETE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+
 };
 
 /*
@@ -61,6 +83,18 @@ enum macro_id {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     switch (id) {
+        case DELETELINE:
+          if (record->event.pressed) {
+            // on press
+            return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
+                          D(LCTL), T(X), U(LCTL),
+                          END);
+          } else {
+            // on release
+            layer_off(LAYER_DELETE_MOTION);
+          }
+          break;
+
         case ECHOH:
           return (record->event.pressed ?
               MACRO( D(LCTRL), T(C), U(LCTRL), T(E), T(C), T(H), T(O), T(SPC), T(MINS), T(E), T(SPC),
