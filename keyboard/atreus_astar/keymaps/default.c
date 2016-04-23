@@ -8,7 +8,9 @@ enum layer_id {
   LAYER_FNARROWS,
   LAYER_MOUSEMACRO,
   LAYER_NORMAL_MODE,
+  LAYER_NORMAL_SHIFT_MODE,
   LAYER_DELETE_MOTION,
+  LAYER_DELETE_INNER_MOTION,
   LAYER_CHANGE_MOTION,
 };
 
@@ -17,9 +19,12 @@ enum macro_id {
   SHUFFLEFILES,
   GITCOMMIT,
   DELETELINE,
+  DELETEINNERWORD,
   CHANGELINE,
   PASTE,
   SEARCH,
+  NEWLINEABOVE,
+  NEWLINEBELOW,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -66,16 +71,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Global Normal Mode
 
 [LAYER_NORMAL_MODE] = KEYMAP(
-  KC_NO,    KC_NO,       KC_NO,                    LCTL(KC_V),  KC_NO,                    /*       */      KC_NO,    KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,      \
-  KC_NO,    LCTL(KC_Y),  KC_NO,                    KC_NO,       TG(LAYER_DELETE_MOTION),  /*       */      KC_LEFT,  KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  KC_NO,      \
-  KC_NO,    LCTL(KC_X),  TG(LAYER_CHANGE_MOTION),  KC_NO,       KC_NO,                    /*       */      KC_NO,    KC_NO,     KC_NO,       KC_NO,              M(SEARCH),  \
-  KC_TRNS,  KC_NO,       KC_NO,                    KC_NO,       KC_NO,                    KC_ESC,  KC_NO,  KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+  KC_NO,              LCTL(KC_RIGHT),  KC_NO,                    LCTL(KC_V),  KC_NO,                        /*       */      KC_NO,                        KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,            \
+  DF(LAYER_COLEMAK),  LCTL(KC_Y),      KC_NO,                    KC_NO,       TG(LAYER_DELETE_MOTION),      /*       */      KC_LEFT,                      KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  M(NEWLINEBELOW),  \
+  KC_NO,              LCTL(KC_X),      TG(LAYER_CHANGE_MOTION),  KC_NO,       LCTL(KC_LEFT),                /*       */      KC_NO,                        KC_NO,     KC_NO,       KC_NO,              M(SEARCH),        \
+  KC_TRNS,            KC_NO,           KC_NO,                    KC_NO,       MO(LAYER_NORMAL_SHIFT_MODE),  KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT_MODE),  KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+
+[LAYER_NORMAL_SHIFT_MODE] = KEYMAP(
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,            \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  M(NEWLINEABOVE),  \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,            \
+  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
 [LAYER_DELETE_MOTION] = KEYMAP(
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          TG(LAYER_DELETE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,  KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  \
+  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
+  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          TG(LAYER_DELETE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO),
+
+[LAYER_DELETE_INNER_MOTION] = KEYMAP(
+  KC_NO,    M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,               KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,               KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_TRNS,  KC_NO,               KC_NO,  KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
 [LAYER_CHANGE_MOTION] = KEYMAP(
   KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
@@ -91,6 +108,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     switch (id) {
+        case NEWLINEABOVE:
+          if (record->event.pressed) { // on press
+            return MACRO( T(HOME), T(ENTER), T(UP), END);
+          } else { // on release
+            default_layer_set(LAYER_COLEMAK); // exit normal mode
+          }
+          break;
+
+        case NEWLINEBELOW:
+          if (record->event.pressed) { // on press
+            return MACRO( T(END), T(ENTER), END);
+          } else { // on release
+            default_layer_set(LAYER_COLEMAK); // exit normal mode
+          }
+          break;
+
         case SEARCH:
           if (record->event.pressed) { // on press
             return MACRO( D(LCTL), T(F), U(LCTL), END);
@@ -116,6 +149,18 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
                           D(LCTL), T(X), U(LCTL),
                           END);
           } else { // on release
+            layer_off(LAYER_DELETE_MOTION); // untoggle
+          }
+          break;
+
+        case DELETEINNERWORD:
+          if (record->event.pressed) { // on press
+            return MACRO( D(LCTL), T(LEFT), U(LCTL),
+                          D(LSHIFT), D(LCTL), T(RIGHT), U(LSHIFT),U(LCTL),
+                          D(LCTL), T(X), U(LCTL),
+                          END);
+          } else { // on release
+            layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
             layer_off(LAYER_DELETE_MOTION); // untoggle
           }
           break;
