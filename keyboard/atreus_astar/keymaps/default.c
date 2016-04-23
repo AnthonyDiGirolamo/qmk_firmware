@@ -9,6 +9,7 @@ enum layer_id {
   LAYER_MOUSEMACRO,
   LAYER_NORMAL_MODE,
   LAYER_DELETE_MOTION,
+  LAYER_CHANGE_MOTION,
 };
 
 enum macro_id {
@@ -16,6 +17,9 @@ enum macro_id {
   SHUFFLEFILES,
   GITCOMMIT,
   DELETELINE,
+  CHANGELINE,
+  PASTE,
+  SEARCH,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -59,21 +63,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
   KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8),
 
-//  Q  W     E  R  T  |  Y  >  Undo  O    P
-//  A  Redo  D  F  G  |  <  v  ^     L    SCLN
-//  Z  X     C  V  B  |  N  M  COMM  DOT  SLSH
+// Global Normal Mode
 
 [LAYER_NORMAL_MODE] = KEYMAP(
-  KC_NO,    KC_NO,       KC_NO,  KC_NO,  KC_NO,                    /*      */      KC_NO,    KC_RIGHT,  LCTL(KC_Z),  KC_NO,              KC_NO,  \
-  KC_NO,    LCTL(KC_Y),  KC_NO,  KC_NO,  TG(LAYER_DELETE_MOTION),  /*      */      KC_LEFT,  KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  KC_NO,  \
-  KC_NO,    KC_NO,       KC_NO,  KC_NO,  KC_NO,                    /*      */      KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_NO,  \
-  KC_TRNS,  KC_NO,       KC_NO,  KC_NO,  KC_NO,                    KC_NO,  KC_NO,  KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+  KC_NO,    KC_NO,       KC_NO,                    LCTL(KC_V),  KC_NO,                    /*       */      KC_NO,    KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,      \
+  KC_NO,    LCTL(KC_Y),  KC_NO,                    KC_NO,       TG(LAYER_DELETE_MOTION),  /*       */      KC_LEFT,  KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  KC_NO,      \
+  KC_NO,    LCTL(KC_X),  TG(LAYER_CHANGE_MOTION),  KC_NO,       KC_NO,                    /*       */      KC_NO,    KC_NO,     KC_NO,       KC_NO,              M(SEARCH),  \
+  KC_TRNS,  KC_NO,       KC_NO,                    KC_NO,       KC_NO,                    KC_ESC,  KC_NO,  KC_NO,    KC_NO,     KC_NO,       KC_NO,              KC_FN8),
 
 [LAYER_DELETE_MOTION] = KEYMAP(
   KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
   KC_NO,    KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
   KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
   KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          TG(LAYER_DELETE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+
+[LAYER_CHANGE_MOTION] = KEYMAP(
+  KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,  M(CHANGELINE),  KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_TRNS,  KC_NO,  KC_NO,          KC_NO,  KC_NO,  TG(LAYER_CHANGE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
 };
 
@@ -83,15 +91,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     switch (id) {
-        case DELETELINE:
-          if (record->event.pressed) {
-            // on press
+        case SEARCH:
+          if (record->event.pressed) { // on press
+            return MACRO( D(LCTL), T(F), U(LCTL), END);
+          } else { // on release
+            default_layer_set(LAYER_COLEMAK); // exit normal mode
+          }
+          break;
+
+        case CHANGELINE:
+          if (record->event.pressed) { // on press
             return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
                           D(LCTL), T(X), U(LCTL),
                           END);
-          } else {
-            // on release
-            layer_off(LAYER_DELETE_MOTION);
+          } else { // on release
+            layer_off(LAYER_CHANGE_MOTION); // untoggle
+            default_layer_set(LAYER_COLEMAK); // exit normal mode
+          }
+          break;
+
+        case DELETELINE:
+          if (record->event.pressed) { // on press
+            return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
+                          D(LCTL), T(X), U(LCTL),
+                          END);
+          } else { // on release
+            layer_off(LAYER_DELETE_MOTION); // untoggle
           }
           break;
 
