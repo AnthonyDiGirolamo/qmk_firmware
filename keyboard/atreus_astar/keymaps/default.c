@@ -22,17 +22,19 @@ enum macro_id {
   DELETELINE,
   DELETEINNERWORD,
   CHANGELINE,
+  CHANGEINNERWORD,
   PASTE,
   SEARCH,
   NEWLINEABOVE,
   NEWLINEBELOW,
+  BEGINNINGOFLINEINSERT,
+  ENDOFLINEAPPEND,
   VISUALMODE,
   VISUALLINEMODE,
   VISUALDELETE,
   VISUALPASTE,
   VISUALCHANGE,
   VISUALYANK,
-  CHANGEINNERWORD,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -86,10 +88,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT_MODE] = KEYMAP(
-  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,    KC_NO,  KC_NO,            \
-  KC_NO,  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_NO,  M(NEWLINEABOVE),  \
-  KC_NO,  KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                            */      KC_NO,    KC_NO,    KC_NO,    KC_NO,  KC_NO,            \
-  KC_NO,  KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,  KC_NO),
+  KC_NO,               KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,    KC_NO,                     KC_NO,            \
+  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_TRNS,  KC_TRNS,  KC_TRNS,  M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
+  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                            */      KC_NO,    KC_NO,    KC_NO,    KC_NO,                     KC_NO,            \
+  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,                     KC_NO),
 
 [LAYER_VISUAL_MODE] = KEYMAP(
   KC_NO,  KC_TRNS,          KC_NO,            M(VISUALPASTE),  KC_NO,            /*      */      KC_NO,    KC_TRNS,  KC_NO,    M(VISUALYANK),  KC_NO,  \
@@ -126,9 +128,10 @@ enum mode_ids {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t mode;
 
+  xprintf("------------\n");
   xprintf("key row: %u\n", record->event.key.row);
   xprintf("key col: %u\n", record->event.key.col);
-  xprintf("pressed:   %u\n", record->event.pressed);
+  xprintf("pressed: %u\n", record->event.pressed);
 
   switch (id) {
   case VISUALMODE:
@@ -234,6 +237,24 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         layer_off(LAYER_VISUAL_MODE);
         return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
       }
+    }
+    break;
+
+  case BEGINNINGOFLINEINSERT:
+    if (record->event.pressed) { // on press
+      return MACRO( T(HOME), END);
+    } else { // on release
+      layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case ENDOFLINEAPPEND:
+    if (record->event.pressed) { // on press
+      return MACRO( T(END), END);
+    } else { // on release
+      layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
     }
     break;
 
