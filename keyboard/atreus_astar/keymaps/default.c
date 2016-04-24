@@ -9,6 +9,7 @@ enum layer_id {
   LAYER_MOUSEMACRO,
   LAYER_NORMAL_MODE,
   LAYER_NORMAL_SHIFT_MODE,
+  LAYER_VISUAL_MODE,
   LAYER_DELETE_MOTION,
   LAYER_DELETE_INNER_MOTION,
   LAYER_CHANGE_MOTION,
@@ -25,6 +26,13 @@ enum macro_id {
   SEARCH,
   NEWLINEABOVE,
   NEWLINEBELOW,
+  VISUALMODE,
+  VISUALLINEMODE,
+  VISUALDELETE,
+  VISUALPASTE,
+  VISUALCHANGE,
+  VISUALYANK,
+  CHANGEINNERWORD,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -71,47 +79,165 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Global Normal Mode
 
 [LAYER_NORMAL_MODE] = KEYMAP(
-  KC_NO,              LCTL(KC_RIGHT),  KC_NO,                    LCTL(KC_V),  KC_NO,                        /*       */      KC_NO,                        KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,            \
-  DF(LAYER_COLEMAK),  LCTL(KC_Y),      KC_NO,                    KC_NO,       TG(LAYER_DELETE_MOTION),      /*       */      KC_LEFT,                      KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  M(NEWLINEBELOW),  \
-  KC_NO,              LCTL(KC_X),      TG(LAYER_CHANGE_MOTION),  KC_NO,       LCTL(KC_LEFT),                /*       */      KC_NO,                        KC_NO,     KC_NO,       KC_NO,              M(SEARCH),        \
-  KC_TRNS,            KC_NO,           KC_NO,                    KC_NO,       MO(LAYER_NORMAL_SHIFT_MODE),  KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT_MODE),  KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+  KC_NO,              LCTL(KC_RIGHT),  KC_NO,                    LCTL(KC_V),     KC_NO,                        /*       */      KC_NO,                        KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,            \
+  DF(LAYER_COLEMAK),  LCTL(KC_Y),      KC_NO,                    KC_NO,          TG(LAYER_DELETE_MOTION),      /*       */      KC_LEFT,                      KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  M(NEWLINEBELOW),  \
+  KC_NO,              LCTL(KC_X),      TG(LAYER_CHANGE_MOTION),  M(VISUALMODE),  LCTL(KC_LEFT),                /*       */      KC_NO,                        KC_NO,     KC_NO,       KC_NO,              M(SEARCH),        \
+  KC_NO,              KC_NO,           KC_NO,                    KC_NO,          MO(LAYER_NORMAL_SHIFT_MODE),  KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT_MODE),  KC_NO,     KC_NO,       KC_NO,              KC_FN8),
 
 [LAYER_NORMAL_SHIFT_MODE] = KEYMAP(
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,            \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  M(NEWLINEABOVE),  \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,            \
-  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,    KC_NO,  KC_NO,            \
+  KC_NO,  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_NO,  M(NEWLINEABOVE),  \
+  KC_NO,  KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                            */      KC_NO,    KC_NO,    KC_NO,    KC_NO,  KC_NO,            \
+  KC_NO,  KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,  KC_NO),
+
+[LAYER_VISUAL_MODE] = KEYMAP(
+  KC_NO,  KC_TRNS,  KC_NO,            M(VISUALPASTE),  KC_NO,            /*      */      KC_NO,    KC_TRNS,  KC_NO,    M(VISUALYANK),  KC_NO,  \
+  KC_NO,  KC_NO,    KC_NO,            KC_NO,           M(VISUALDELETE),  /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_NO,          KC_NO,  \
+  KC_NO,  KC_NO,    M(VISUALCHANGE),  M(VISUALMODE),   KC_TRNS,          /*      */      KC_NO,    KC_NO,    KC_NO,    KC_NO,          KC_NO,  \
+  KC_NO,  KC_NO,    KC_NO,            KC_NO,           KC_TRNS,          KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,          KC_NO),
 
 [LAYER_DELETE_MOTION] = KEYMAP(
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,  KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  \
-  KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
-  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          TG(LAYER_DELETE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,                          KC_NO),
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,    KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,        TG(LAYER_DELETE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,                          KC_NO),
 
 [LAYER_DELETE_INNER_MOTION] = KEYMAP(
-  KC_NO,    M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,               KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,               KC_NO,  KC_NO,  KC_NO,  /*                              */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_TRNS,  KC_NO,               KC_NO,  KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+  KC_NO,  M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_TRNS,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
 [LAYER_CHANGE_MOTION] = KEYMAP(
-  KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,  M(CHANGELINE),  KC_NO,  KC_NO,  /*                        */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_TRNS,  KC_NO,  KC_NO,          KC_NO,  KC_NO,  TG(LAYER_CHANGE_MOTION),  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+  KC_NO,  M(CHANGEINNERWORD),  KC_NO,          KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,          KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               M(CHANGELINE),  KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,          KC_NO,  KC_TRNS,  TG(LAYER_CHANGE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
 };
 
-/*
- * Macro definition
- */
+enum mode_ids {
+  VISUALMODE_BIT,
+  LASTDELETE_ENTIRE_LINE_BIT,
+};
+
+// Macro definition
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
-    switch (id) {
+  static uint8_t mode;
+
+  switch (id) {
+        case VISUALMODE:
+          if (record->event.pressed) { // on press
+            // mode ^= 1;
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+            }
+          } else { // on release
+            return MACRO( T(RIGHT), END); // clear the selection
+          }
+          break;
+
+        case VISUALLINEMODE:
+          if (record->event.pressed) { // on press
+            // select the first line
+            return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT), END);
+          } else { // on release
+            // turn on visual mode
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual line [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+            }
+          }
+          break;
+
+        case VISUALCHANGE:
+          if (record->event.pressed) { // on press
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+              default_layer_set(LAYER_COLEMAK); // exit normal mode
+              return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
+            }
+          } else { // on release
+          }
+          break;
+
+        case VISUALYANK:
+          if (record->event.pressed) { // on press
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+              return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
+            }
+          } else { // on release
+          }
+          break;
+
+        case VISUALDELETE:
+          if (record->event.pressed) { // on press
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+              return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
+            }
+          } else { // on release
+          }
+          break;
+
+        case VISUALPASTE:
+          if (record->event.pressed) { // on press
+            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+              register_code(KC_LSHIFT);
+              layer_on(LAYER_VISUAL_MODE);
+            }
+            else {
+              unregister_code(KC_LSHIFT);
+              layer_off(LAYER_VISUAL_MODE);
+              return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
+            }
+          } else { // on release
+          }
+          break;
+
         case NEWLINEABOVE:
           if (record->event.pressed) { // on press
             return MACRO( T(HOME), T(ENTER), T(UP), END);
           } else { // on release
+            layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
             default_layer_set(LAYER_COLEMAK); // exit normal mode
           }
           break;
@@ -143,9 +269,23 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
           }
           break;
 
+        case CHANGEINNERWORD:
+          if (record->event.pressed) { // on press
+            return MACRO( D(LCTL), T(LEFT),
+                          D(LSHIFT), T(RIGHT), U(LCTL),
+                          T(LEFT), U(LSHIFT),
+                          D(LCTL), T(X), U(LCTL),
+                          END);
+          } else { // on release
+            layer_off(LAYER_CHANGE_MOTION); // untoggle
+            default_layer_set(LAYER_COLEMAK); // exit normal mode
+          }
+          break;
+
         case DELETELINE:
           if (record->event.pressed) { // on press
-            return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
+            // select the first line and cut
+            return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT),
                           D(LCTL), T(X), U(LCTL),
                           END);
           } else { // on release
@@ -173,6 +313,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
                      END) :
               MACRO_NONE);
 
+        /*
         case SHUFFLEFILES:
           return (record->event.pressed ?
               MACRO( D(LCTRL), T(C), U(LCTRL), T(R), T(U), T(B), T(Y), T(SPC), T(MINUS), T(E), T(SPC),
@@ -235,6 +376,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
                      T(ENT),
                      END) :
               MACRO_NONE);
+          */
           /* ruby -e 'Dir["*"].map{|d|`mv #{d} #{d.split("").shuffle.join}`}' */
 
         case GITCOMMIT:
