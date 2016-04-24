@@ -35,6 +35,8 @@ enum macro_id {
   VISUALPASTE,
   VISUALCHANGE,
   VISUALYANK,
+  UNINDENT,
+  INDENT,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -88,10 +90,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT_MODE] = KEYMAP(
-  KC_NO,               KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,    KC_NO,                     KC_NO,            \
-  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_TRNS,  KC_TRNS,  KC_TRNS,  M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
-  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                            */      KC_NO,    KC_NO,    KC_NO,    KC_NO,                     KC_NO,            \
-  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,                     KC_NO),
+  KC_NO,               KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,        KC_NO,                     KC_NO,            \
+  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_TRNS,  KC_TRNS,  KC_TRNS,      M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
+  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                            */      KC_NO,    KC_NO,    M(UNINDENT),  M(INDENT),                 KC_NO,            \
+  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,        KC_NO,                     KC_NO),
 
 [LAYER_VISUAL_MODE] = KEYMAP(
   KC_NO,  KC_TRNS,          KC_NO,            M(VISUALPASTE),  KC_NO,            /*      */      KC_NO,    KC_TRNS,  KC_NO,    M(VISUALYANK),  KC_NO,  \
@@ -237,6 +239,22 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         layer_off(LAYER_VISUAL_MODE);
         return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
       }
+    }
+    break;
+
+  case UNINDENT:
+    if (record->event.pressed) { // on press
+      return MACRO( D(LCTRL), T(LBRC), U(LCTRL), END);
+    } else { // on release
+      // layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
+    }
+    break;
+
+  case INDENT:
+    if (record->event.pressed) { // on press
+      return MACRO( D(LCTRL), T(RBRC), U(LCTRL), END);
+    } else { // on release
+      // layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
     }
     break;
 
