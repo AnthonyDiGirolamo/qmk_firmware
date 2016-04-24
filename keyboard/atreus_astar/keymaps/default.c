@@ -123,8 +123,7 @@ enum mode_ids {
 };
 
 // Macro definition
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t mode;
 
   xprintf("key row: %u\n", record->event.key.row);
@@ -132,270 +131,270 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
   xprintf("pressed:   %u\n", record->event.pressed);
 
   switch (id) {
-        case VISUALMODE:
-          if (record->event.pressed) { // on press
-            mode ^= _BV(VISUALMODE_BIT); // mode ^= 1; // toggle first bit
-            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-            }
-          } else { // on release
-            return MACRO( T(RIGHT), END); // clear the selection
-          }
-          break;
-
-        case VISUALLINEMODE:
-          if (record->event.pressed) { // on press
-            // select the first line
-            return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT), END);
-          } else { // on release
-            // turn on visual mode
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
-            xprintf("visual line [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-            }
-          }
-          break;
-
-        case VISUALCHANGE:
-          if (record->event.pressed) { // on press
-          } else { // on release
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
-            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-              default_layer_set(LAYER_COLEMAK); // exit normal mode
-              return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
-            }
-          }
-          break;
-
-        case VISUALYANK:
-          if (record->event.pressed) { // on press
-          } else { // on release
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
-            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-              return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
-            }
-          }
-          break;
-
-        case VISUALDELETE:
-          if (record->event.pressed) { // on press
-          } else { // on release
-            // must perform action on release otherwise the release will trigger the normal layer action
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
-            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-              return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
-            }
-          }
-          break;
-
-        case VISUALPASTE:
-          if (record->event.pressed) { // on press
-          } else { // on release
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
-            xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
-            if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-              register_code(KC_LSHIFT);
-              layer_on(LAYER_VISUAL_MODE);
-            }
-            else {
-              unregister_code(KC_LSHIFT);
-              layer_off(LAYER_VISUAL_MODE);
-              return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
-            }
-          }
-          break;
-
-        case NEWLINEABOVE:
-          if (record->event.pressed) { // on press
-            return MACRO( T(HOME), T(ENTER), T(UP), END);
-          } else { // on release
-            layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
-            default_layer_set(LAYER_COLEMAK); // exit normal mode
-          }
-          break;
-
-        case NEWLINEBELOW:
-          if (record->event.pressed) { // on press
-            return MACRO( T(END), T(ENTER), END);
-          } else { // on release
-            default_layer_set(LAYER_COLEMAK); // exit normal mode
-          }
-          break;
-
-        case SEARCH:
-          if (record->event.pressed) { // on press
-            return MACRO( D(LCTL), T(F), U(LCTL), END);
-          } else { // on release
-            default_layer_set(LAYER_COLEMAK); // exit normal mode
-          }
-          break;
-
-        case CHANGELINE:
-          if (record->event.pressed) { // on press
-            return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
-                          D(LCTL), T(X), U(LCTL),
-                          END);
-          } else { // on release
-            layer_off(LAYER_CHANGE_MOTION); // untoggle
-            default_layer_set(LAYER_COLEMAK); // exit normal mode
-          }
-          break;
-
-        case CHANGEINNERWORD:
-          if (record->event.pressed) { // on press
-            return MACRO( D(LCTL), T(LEFT),
-                          D(LSHIFT), T(RIGHT), U(LCTL),
-                          // T(LEFT),
-                          U(LSHIFT),
-                          D(LCTL), T(X), U(LCTL),
-                          END);
-          } else { // on release
-            layer_off(LAYER_CHANGE_MOTION); // untoggle
-            default_layer_set(LAYER_COLEMAK); // exit normal mode
-          }
-          break;
-
-        case DELETELINE:
-          if (record->event.pressed) { // on press
-            // select the first line and cut
-            return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT),
-                          D(LCTL), T(X), U(LCTL),
-                          END);
-          } else { // on release
-            layer_off(LAYER_DELETE_MOTION); // untoggle
-          }
-          break;
-
-        case DELETEINNERWORD:
-          if (record->event.pressed) { // on press
-            return MACRO( D(LCTL), T(LEFT),
-                          D(LSHIFT), T(RIGHT), U(LCTL),
-                          // T(LEFT),
-                          U(LSHIFT),
-                          D(LCTL), T(X), U(LCTL),
-                          END);
-          } else { // on release
-            // layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
-            layer_off(LAYER_DELETE_MOTION); // untoggle
-          }
-          break;
-
-        case ECHOH:
-          return (record->event.pressed ?
-              MACRO( D(LCTRL), T(C), U(LCTRL), T(E), T(C), T(H), T(O), T(SPC), T(MINS), T(E), T(SPC),
-                     D(LSHIFT), T(QUOT), U(LSHIFT), T(BSLS), T(0), T(3), T(3), D(LSHIFT), T(9), U(LSHIFT), T(0), D(LSHIFT), T(QUOT), U(LSHIFT), T(SPC),
-                     T(SCLN), T(SPC), T(C), T(L), T(E), T(A), T(R), T(ENT),
-                     END) :
-              MACRO_NONE);
-
-        /*
-        case SHUFFLEFILES:
-          return (record->event.pressed ?
-              MACRO( D(LCTRL), T(C), U(LCTRL), T(R), T(U), T(B), T(Y), T(SPC), T(MINUS), T(E), T(SPC),
-                     T(QUOT),
-                     D(LSHIFT), T(D), U(LSHIFT),
-                     T(I),
-                     T(R),
-                     T(LBRACKET),
-                     D(LSHIFT), T(QUOT), U(LSHIFT),
-                     D(LSHIFT), T(8), U(LSHIFT),
-                     D(LSHIFT), T(QUOT), U(LSHIFT),
-                     T(RBRACKET),
-                     T(DOT),
-                     T(M),
-                     T(A),
-                     T(P),
-                     D(LSHIFT), T(LBRACKET), U(LSHIFT),
-                     D(LSHIFT), T(BSLASH), U(LSHIFT),
-                     T(D),
-                     D(LSHIFT), T(BSLASH), U(LSHIFT),
-                     T(GRAVE),
-                     T(M),
-                     T(V),
-                     T(SPC),
-                     D(LSHIFT), T(3), U(LSHIFT),
-                     D(LSHIFT), T(LBRACKET), U(LSHIFT),
-                     T(D),
-                     D(LSHIFT), T(RBRACKET), U(LSHIFT),
-                     T(SPC),
-                     D(LSHIFT), T(3), U(LSHIFT),
-                     D(LSHIFT), T(LBRACKET), U(LSHIFT),
-                     T(D),
-                     T(DOT),
-                     T(S),
-                     T(P),
-                     T(L),
-                     T(I),
-                     T(T),
-                     D(LSHIFT), T(9), U(LSHIFT),
-                     D(LSHIFT), T(QUOT), U(LSHIFT),
-                     D(LSHIFT), T(QUOT), U(LSHIFT),
-                     D(LSHIFT), T(0), U(LSHIFT),
-                     T(DOT),
-                     T(S),
-                     T(H),
-                     T(U),
-                     T(F),
-                     T(F),
-                     T(L),
-                     T(E),
-                     T(DOT),
-                     T(J),
-                     T(O),
-                     T(I),
-                     T(N),
-                     D(LSHIFT), T(RBRACKET), U(LSHIFT),
-                     T(GRAVE),
-                     D(LSHIFT), T(RBRACKET), U(LSHIFT),
-                     T(QUOT),
-                     T(ENT),
-                     END) :
-              MACRO_NONE);
-          */
-          /* ruby -e 'Dir["*"].map{|d|`mv #{d} #{d.split("").shuffle.join}`}' */
-
-        case GITCOMMIT:
-          return (record->event.pressed ?
-              MACRO( D(LCTRL), T(C), U(LCTRL),
-                     T(G), T(I), T(T), T(SPC), T(C), T(O), T(M), T(M), T(I), T(T), T(SPC), T(MINS), T(A), T(ENT),
-                     END) :
-              MACRO_NONE);
-
+  case VISUALMODE:
+    if (record->event.pressed) { // on press
+      mode ^= _BV(VISUALMODE_BIT); // mode ^= 1; // toggle first bit
+      xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+      }
+    } else { // on release
+      return MACRO( T(RIGHT), END); // clear the selection
     }
-    return MACRO_NONE;
+    break;
+
+  case VISUALLINEMODE:
+    if (record->event.pressed) { // on press
+      // select the first line
+      return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT), END);
+    } else { // on release
+      // turn on visual mode
+      mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+      xprintf("visual line [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+      }
+    }
+    break;
+
+  case VISUALCHANGE:
+    if (record->event.pressed) { // on press
+    } else { // on release
+      mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+      xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+        default_layer_set(LAYER_COLEMAK); // exit normal mode
+        return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
+      }
+    }
+    break;
+
+  case VISUALYANK:
+    if (record->event.pressed) { // on press
+    } else { // on release
+      mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+      xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+        return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
+      }
+    }
+    break;
+
+  case VISUALDELETE:
+    if (record->event.pressed) { // on press
+    } else { // on release
+      // must perform action on release otherwise the release will trigger the normal layer action
+      mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+      xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+        return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
+      }
+    }
+    break;
+
+  case VISUALPASTE:
+    if (record->event.pressed) { // on press
+    } else { // on release
+      mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+      xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
+      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
+        register_code(KC_LSHIFT);
+        layer_on(LAYER_VISUAL_MODE);
+      }
+      else {
+        unregister_code(KC_LSHIFT);
+        layer_off(LAYER_VISUAL_MODE);
+        return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
+      }
+    }
+    break;
+
+  case NEWLINEABOVE:
+    if (record->event.pressed) { // on press
+      return MACRO( T(HOME), T(ENTER), T(UP), END);
+    } else { // on release
+      layer_off(LAYER_NORMAL_SHIFT_MODE); // untoggle
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case NEWLINEBELOW:
+    if (record->event.pressed) { // on press
+      return MACRO( T(END), T(ENTER), END);
+    } else { // on release
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case SEARCH:
+    if (record->event.pressed) { // on press
+      return MACRO( D(LCTL), T(F), U(LCTL), END);
+    } else { // on release
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case CHANGELINE:
+    if (record->event.pressed) { // on press
+      return MACRO( T(HOME), D(LSHIFT), T(END), U(LSHIFT),
+                    D(LCTL), T(X), U(LCTL),
+                    END);
+    } else { // on release
+      layer_off(LAYER_CHANGE_MOTION); // untoggle
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case CHANGEINNERWORD:
+    if (record->event.pressed) { // on press
+      return MACRO( D(LCTL), T(LEFT),
+                    D(LSHIFT), T(RIGHT), U(LCTL),
+                    // T(LEFT),
+                    U(LSHIFT),
+                    D(LCTL), T(X), U(LCTL),
+                    END);
+    } else { // on release
+      layer_off(LAYER_CHANGE_MOTION); // untoggle
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+    }
+    break;
+
+  case DELETELINE:
+    if (record->event.pressed) { // on press
+      // select the first line and cut
+      return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT),
+                    D(LCTL), T(X), U(LCTL),
+                    END);
+    } else { // on release
+      layer_off(LAYER_DELETE_MOTION); // untoggle
+    }
+    break;
+
+  case DELETEINNERWORD:
+    if (record->event.pressed) { // on press
+      return MACRO( D(LCTL), T(LEFT),
+                    D(LSHIFT), T(RIGHT), U(LCTL),
+                    // T(LEFT),
+                    U(LSHIFT),
+                    D(LCTL), T(X), U(LCTL),
+                    END);
+    } else { // on release
+      // layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
+      layer_off(LAYER_DELETE_MOTION); // untoggle
+    }
+    break;
+
+  case ECHOH:
+    return (record->event.pressed ?
+            MACRO( D(LCTRL), T(C), U(LCTRL), T(E), T(C), T(H), T(O), T(SPC), T(MINS), T(E), T(SPC),
+                   D(LSHIFT), T(QUOT), U(LSHIFT), T(BSLS), T(0), T(3), T(3), D(LSHIFT), T(9), U(LSHIFT), T(0), D(LSHIFT), T(QUOT), U(LSHIFT), T(SPC),
+                   T(SCLN), T(SPC), T(C), T(L), T(E), T(A), T(R), T(ENT),
+                   END) :
+            MACRO_NONE);
+
+    /*
+      case SHUFFLEFILES:
+      return (record->event.pressed ?
+      MACRO( D(LCTRL), T(C), U(LCTRL), T(R), T(U), T(B), T(Y), T(SPC), T(MINUS), T(E), T(SPC),
+      T(QUOT),
+      D(LSHIFT), T(D), U(LSHIFT),
+      T(I),
+      T(R),
+      T(LBRACKET),
+      D(LSHIFT), T(QUOT), U(LSHIFT),
+      D(LSHIFT), T(8), U(LSHIFT),
+      D(LSHIFT), T(QUOT), U(LSHIFT),
+      T(RBRACKET),
+      T(DOT),
+      T(M),
+      T(A),
+      T(P),
+      D(LSHIFT), T(LBRACKET), U(LSHIFT),
+      D(LSHIFT), T(BSLASH), U(LSHIFT),
+      T(D),
+      D(LSHIFT), T(BSLASH), U(LSHIFT),
+      T(GRAVE),
+      T(M),
+      T(V),
+      T(SPC),
+      D(LSHIFT), T(3), U(LSHIFT),
+      D(LSHIFT), T(LBRACKET), U(LSHIFT),
+      T(D),
+      D(LSHIFT), T(RBRACKET), U(LSHIFT),
+      T(SPC),
+      D(LSHIFT), T(3), U(LSHIFT),
+      D(LSHIFT), T(LBRACKET), U(LSHIFT),
+      T(D),
+      T(DOT),
+      T(S),
+      T(P),
+      T(L),
+      T(I),
+      T(T),
+      D(LSHIFT), T(9), U(LSHIFT),
+      D(LSHIFT), T(QUOT), U(LSHIFT),
+      D(LSHIFT), T(QUOT), U(LSHIFT),
+      D(LSHIFT), T(0), U(LSHIFT),
+      T(DOT),
+      T(S),
+      T(H),
+      T(U),
+      T(F),
+      T(F),
+      T(L),
+      T(E),
+      T(DOT),
+      T(J),
+      T(O),
+      T(I),
+      T(N),
+      D(LSHIFT), T(RBRACKET), U(LSHIFT),
+      T(GRAVE),
+      D(LSHIFT), T(RBRACKET), U(LSHIFT),
+      T(QUOT),
+      T(ENT),
+      END) :
+      MACRO_NONE);
+    */
+    /* ruby -e 'Dir["*"].map{|d|`mv #{d} #{d.split("").shuffle.join}`}' */
+
+  case GITCOMMIT:
+    return (record->event.pressed ?
+            MACRO( D(LCTRL), T(C), U(LCTRL),
+                   T(G), T(I), T(T), T(SPC), T(C), T(O), T(M), T(M), T(I), T(T), T(SPC), T(MINS), T(A), T(ENT),
+                   END) :
+            MACRO_NONE);
+
+  }
+  return MACRO_NONE;
 }
 
 
