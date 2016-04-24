@@ -81,8 +81,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NORMAL_MODE] = KEYMAP(
   KC_NO,              LCTL(KC_RIGHT),  KC_NO,                    LCTL(KC_V),     KC_NO,                        /*       */      KC_NO,                        KC_RIGHT,  LCTL(KC_Z),  LCTL(KC_C),         KC_NO,            \
   DF(LAYER_COLEMAK),  LCTL(KC_Y),      KC_NO,                    KC_NO,          TG(LAYER_DELETE_MOTION),      /*       */      KC_LEFT,                      KC_DOWN,   KC_UP,       DF(LAYER_COLEMAK),  M(NEWLINEBELOW),  \
-  KC_NO,              LCTL(KC_X),      TG(LAYER_CHANGE_MOTION),  M(VISUALMODE),  LCTL(KC_LEFT),                /*       */      KC_NO,                        KC_NO,     KC_NO,       KC_NO,              M(SEARCH),        \
-  KC_NO,              KC_NO,           KC_NO,                    KC_NO,          MO(LAYER_NORMAL_SHIFT_MODE),  KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT_MODE),  KC_NO,     KC_NO,       KC_NO,              KC_FN8),
+  KC_NO,              KC_DEL,          TG(LAYER_CHANGE_MOTION),  M(VISUALMODE),  LCTL(KC_LEFT),                /*       */      KC_NO,                        KC_NO,     KC_NO,       KC_NO,              M(SEARCH),        \
+  KC_TRNS,            KC_NO,           KC_NO,                    KC_NO,          MO(LAYER_NORMAL_SHIFT_MODE),  KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT_MODE),  KC_NO,     KC_NO,       KC_NO,              KC_TRNS),
+  // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT_MODE] = KEYMAP(
   KC_NO,  KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                            */      KC_NO,    KC_TRNS,  KC_NO,    KC_NO,  KC_NO,            \
@@ -91,22 +92,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_NO,  KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT_MODE),  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,  KC_NO),
 
 [LAYER_VISUAL_MODE] = KEYMAP(
-  KC_NO,  KC_TRNS,  KC_NO,            M(VISUALPASTE),  KC_NO,            /*      */      KC_NO,    KC_TRNS,  KC_NO,    M(VISUALYANK),  KC_NO,  \
-  KC_NO,  KC_NO,    KC_NO,            KC_NO,           M(VISUALDELETE),  /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_NO,          KC_NO,  \
-  KC_NO,  KC_NO,    M(VISUALCHANGE),  M(VISUALMODE),   KC_TRNS,          /*      */      KC_NO,    KC_NO,    KC_NO,    KC_NO,          KC_NO,  \
-  KC_NO,  KC_NO,    KC_NO,            KC_NO,           KC_TRNS,          KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,          KC_NO),
+  KC_NO,  KC_TRNS,          KC_NO,            M(VISUALPASTE),  KC_NO,            /*      */      KC_NO,    KC_TRNS,  KC_NO,    M(VISUALYANK),  KC_NO,  \
+  KC_NO,  KC_NO,            KC_NO,            KC_NO,           M(VISUALDELETE),  /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_NO,          KC_NO,  \
+  KC_NO,  M(VISUALDELETE),  M(VISUALCHANGE),  M(VISUALMODE),   KC_TRNS,          /*      */      KC_NO,    KC_NO,    KC_NO,    KC_NO,          KC_NO,  \
+  KC_NO,  KC_NO,            KC_NO,            KC_NO,           KC_TRNS,          KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,          KC_NO),
 
 [LAYER_DELETE_MOTION] = KEYMAP(
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,    KC_NO,  KC_NO,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,                          KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,        TG(LAYER_DELETE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,                          KC_NO),
+  KC_NO,  M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
+  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_TRNS,        TG(LAYER_DELETE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
 
-[LAYER_DELETE_INNER_MOTION] = KEYMAP(
-  KC_NO,  M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /*                              */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_TRNS,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+/* [LAYER_DELETE_INNER_MOTION] = KEYMAP( */
+/*   KC_NO,  M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
+/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
+/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
+/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_TRNS,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO), */
 
 [LAYER_CHANGE_MOTION] = KEYMAP(
   KC_NO,  M(CHANGEINNERWORD),  KC_NO,          KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
@@ -126,11 +127,14 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
   static uint8_t mode;
 
+  xprintf("key row: %u\n", record->event.key.row);
+  xprintf("key col: %u\n", record->event.key.col);
+  xprintf("pressed:   %u\n", record->event.pressed);
+
   switch (id) {
         case VISUALMODE:
           if (record->event.pressed) { // on press
-            // mode ^= 1;
-            mode ^= _BV(VISUALMODE_BIT); // toggle first bit
+            mode ^= _BV(VISUALMODE_BIT); // mode ^= 1; // toggle first bit
             xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
             if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
               register_code(KC_LSHIFT);
@@ -166,6 +170,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
         case VISUALCHANGE:
           if (record->event.pressed) { // on press
+          } else { // on release
             mode ^= _BV(VISUALMODE_BIT); // toggle first bit
             xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
             if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
@@ -178,12 +183,12 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
               default_layer_set(LAYER_COLEMAK); // exit normal mode
               return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
             }
-          } else { // on release
           }
           break;
 
         case VISUALYANK:
           if (record->event.pressed) { // on press
+          } else { // on release
             mode ^= _BV(VISUALMODE_BIT); // toggle first bit
             xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
             if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
@@ -195,12 +200,13 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
               layer_off(LAYER_VISUAL_MODE);
               return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
             }
-          } else { // on release
           }
           break;
 
         case VISUALDELETE:
           if (record->event.pressed) { // on press
+          } else { // on release
+            // must perform action on release otherwise the release will trigger the normal layer action
             mode ^= _BV(VISUALMODE_BIT); // toggle first bit
             xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
             if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
@@ -212,12 +218,12 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
               layer_off(LAYER_VISUAL_MODE);
               return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
             }
-          } else { // on release
           }
           break;
 
         case VISUALPASTE:
           if (record->event.pressed) { // on press
+          } else { // on release
             mode ^= _BV(VISUALMODE_BIT); // toggle first bit
             xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
             if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
@@ -229,7 +235,6 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
               layer_off(LAYER_VISUAL_MODE);
               return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
             }
-          } else { // on release
           }
           break;
 
@@ -273,7 +278,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
           if (record->event.pressed) { // on press
             return MACRO( D(LCTL), T(LEFT),
                           D(LSHIFT), T(RIGHT), U(LCTL),
-                          T(LEFT), U(LSHIFT),
+                          // T(LEFT),
+                          U(LSHIFT),
                           D(LCTL), T(X), U(LCTL),
                           END);
           } else { // on release
@@ -295,12 +301,14 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
         case DELETEINNERWORD:
           if (record->event.pressed) { // on press
-            return MACRO( D(LCTL), T(LEFT), U(LCTL),
-                          D(LSHIFT), D(LCTL), T(RIGHT), U(LSHIFT),U(LCTL),
+            return MACRO( D(LCTL), T(LEFT),
+                          D(LSHIFT), T(RIGHT), U(LCTL),
+                          // T(LEFT),
+                          U(LSHIFT),
                           D(LCTL), T(X), U(LCTL),
                           END);
           } else { // on release
-            layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
+            // layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
             layer_off(LAYER_DELETE_MOTION); // untoggle
           }
           break;
