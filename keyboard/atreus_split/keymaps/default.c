@@ -26,6 +26,7 @@ enum macro_id {
   CHANGELINE,
   CHANGEINNERWORD,
   PASTE,
+  SHIFTPASTE,
   SEARCH,
   NEWLINEABOVE,
   NEWLINEBELOW,
@@ -87,14 +88,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Global Normal Mode
 
 [LAYER_NORMAL_MODE] = KEYMAP(
-  KC_NO,             LCTL(KC_RIGHT), KC_NO,                   LCTL(KC_V),    KC_NO,                   /*      */     KC_NO,                  KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        KC_NO,           \
+  KC_NO,             LCTL(KC_RIGHT), KC_NO,                   M(PASTE),      KC_NO,                   /*      */     KC_NO,                  KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        KC_NO,           \
   DF(LAYER_COLEMAK), LCTL(KC_Y),     KC_NO,                   KC_NO,         TG(LAYER_DELETE_MOTION), /*      */     KC_LEFT,                KC_DOWN,  KC_UP,         DF(LAYER_COLEMAK), M(NEWLINEBELOW), \
   KC_NO,             KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */     KC_NO,                  KC_NO,    KC_NO,         KC_NO,             M(SEARCH),       \
   KC_NO,             KC_NO,          KC_NO,                   KC_NO,         MO(LAYER_NORMAL_SHIFT),  KC_ESC, KC_NO, MO(LAYER_NORMAL_SHIFT), KC_NO,    LCTL(S(KC_8)), KC_NO,             KC_TRNS),
   // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT] = KEYMAP(
-  KC_NO,               KC_TRNS,  KC_NO,  KC_NO,              KC_NO,    /*                       */      KC_NO,    KC_TRNS,  KC_NO,              KC_NO,                     KC_NO,            \
+  KC_NO,               KC_TRNS,  KC_NO,  M(SHIFTPASTE),      KC_NO,    /*                       */      KC_NO,    KC_TRNS,  KC_NO,              KC_NO,                     KC_NO, \
   M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*                       */      KC_TRNS,  KC_TRNS,  KC_TRNS,            M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
   KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*                       */      KC_NO,    KC_NO,    LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),         KC_NO,            \
   KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  TG(LAYER_NORMAL_SHIFT),  KC_NO,  KC_TRNS,  KC_NO,    LCTL(S(KC_7)),      KC_NO,                     KC_NO),
@@ -140,10 +141,20 @@ enum mode_ids {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t mode;
 
+  // get bit
+  // mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)
+  // set bit
+  // mode |= _BV(LASTDELETE_ENTIRE_LINE_BIT);
+  // clear bit
+  // mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT));
+
   xprintf("------------\n");
-  xprintf("key row: %u\n", record->event.key.row);
-  xprintf("key col: %u\n", record->event.key.col);
-  xprintf("pressed: %u\n", record->event.pressed);
+  xprintf("entire line flag: %u\n", mode & _BV(LASTDELETE_ENTIRE_LINE_BIT));
+  // xprintf("key row: %u\n", record->event.key.row);
+  // xprintf("key col: %u\n", record->event.key.col);
+  // xprintf("pressed: %u\n", record->event.pressed);
+
+  layer_debug();
 
   switch (id) {
   case VISUALMODE:
@@ -163,7 +174,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         return MACRO( D(LSHIFT), T(RIGHT), U(LSHIFT), END); // start the selection
       }
       else {
-        return MACRO( T(RIGHT), END); // clear the selection
+        return MACRO( T(LEFT), END); // clear the selection
       }
     }
     break;
@@ -200,6 +211,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         /* unregister_code(KC_LSHIFT); */
         layer_off(LAYER_VISUAL_MODE);
         default_layer_set(LAYER_COLEMAK); // exit normal mode
+        mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
         return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
       }
     }
@@ -356,6 +368,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     } else { // on release
       layer_off(LAYER_CHANGE_MOTION); // untoggle
       default_layer_set(LAYER_COLEMAK); // exit normal mode
+      mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
     }
     break;
 
@@ -367,6 +380,35 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                     END);
     } else { // on release
       layer_off(LAYER_DELETE_MOTION); // untoggle
+      mode |= _BV(LASTDELETE_ENTIRE_LINE_BIT); // flag as entire line cut
+    }
+    break;
+
+  case PASTE:
+    if (record->event.pressed) { // on press
+      if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
+        return MACRO( T(HOME), T(DOWN), D(LCTL), T(V), U(LCTL), // move down one line then paste
+                      END);
+      }
+      else {
+        return MACRO( D(LCTL), T(V), U(LCTL),
+                      END);
+      }
+    } else { // on release
+    }
+    break;
+
+  case SHIFTPASTE:
+    if (record->event.pressed) { // on press
+      if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
+        return MACRO( T(HOME), T(UP), D(LCTL), T(V), U(LCTL), // move up one line then paste
+                      END);
+      }
+      else {
+        return MACRO( D(LCTL), T(V), U(LCTL),
+                      END);
+      }
+    } else { // on release
     }
     break;
 
@@ -375,6 +417,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       return MACRO( D(LCTL), T(DEL), U(LCTL), END);
     } else { // on release
       layer_off(LAYER_DELETE_MOTION); // untoggle
+      mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
     }
     break;
 
@@ -389,6 +432,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     } else { // on release
       // layer_off(LAYER_DELETE_INNER_MOTION); // untoggle
       layer_off(LAYER_DELETE_MOTION); // untoggle
+      mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
     }
     break;
 
