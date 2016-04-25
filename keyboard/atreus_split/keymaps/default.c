@@ -399,6 +399,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
         return MACRO( T(HOME), T(DOWN), D(LCTL), T(V), U(LCTL), // move down one line then paste
+                      /* W(100), */
+                      T(LEFT),
                       END);
       }
       else {
@@ -412,7 +414,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   case SHIFTPASTE:
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
-        return MACRO( T(HOME), T(UP), D(LCTL), T(V), U(LCTL), // move up one line then paste
+        return MACRO( T(HOME), D(LCTL), T(V), U(LCTL),
+                      /* W(100), */
+                      T(LEFT),
                       END);
       }
       else {
@@ -425,7 +429,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
   case DELETEWORD:
     if (record->event.pressed) { // on press
-      return MACRO( D(LCTL), T(DEL), U(LCTL), END);
+      return MACRO( D(LCTL), D(LSHIFT), T(RIGHT), U(LCTL), U(LSHIFT),
+                    D(LCTL), T(X), U(LCTL),
+                    END);
     } else { // on release
       layer_off(LAYER_DELETE_MOTION); // untoggle
       mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
