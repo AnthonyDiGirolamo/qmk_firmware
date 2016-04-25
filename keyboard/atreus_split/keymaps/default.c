@@ -399,8 +399,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
         return MACRO( T(HOME), T(DOWN), D(LCTL), T(V), U(LCTL), // move down one line then paste
-                      /* W(100), */
-                      T(LEFT),
+                      // W(100),
+                      // T(LEFT),
                       END);
       }
       else {
@@ -415,8 +415,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
         return MACRO( T(HOME), D(LCTL), T(V), U(LCTL),
-                      /* W(100), */
-                      T(LEFT),
+                      // W(100),
+                      // T(LEFT),
                       END);
       }
       else {
