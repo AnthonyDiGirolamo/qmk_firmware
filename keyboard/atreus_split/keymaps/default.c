@@ -141,20 +141,31 @@ enum mode_ids {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t mode;
 
-  // get bit
-  // mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)
+  // check if bit is set
+  // if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT))
   // set bit
   // mode |= _BV(LASTDELETE_ENTIRE_LINE_BIT);
   // clear bit
   // mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT));
 
   xprintf("------------\n");
-  xprintf("entire line flag: %u\n", mode & _BV(LASTDELETE_ENTIRE_LINE_BIT));
-  // xprintf("key row: %u\n", record->event.key.row);
-  // xprintf("key col: %u\n", record->event.key.col);
-  // xprintf("pressed: %u\n", record->event.pressed);
+  xprintf("mode: ");
+  xprintf("%d%d%d%d%d%d%d%d",
+          (mode & 0x080 ? 1 : 0), \
+          (mode & 0x040 ? 1 : 0), \
+          (mode & 0x020 ? 1 : 0), \
+          (mode & 0x010 ? 1 : 0), \
+          (mode & 0x08 ? 1 : 0), \
+          (mode & 0x04 ? 1 : 0), \
+          (mode & 0x02 ? 1 : 0), \
+          (mode & 0x01 ? 1 : 0));
+  xprintf("\n");
 
-  layer_debug();
+  xprintf("key row: %u\n", record->event.key.row);
+  xprintf("key col: %u\n", record->event.key.col);
+  xprintf("pressed: %u\n", record->event.pressed);
+
+  xprintf("%08lX(%u)", layer_state, biton32(layer_state));
 
   switch (id) {
   case VISUALMODE:
