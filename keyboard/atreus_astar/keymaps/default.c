@@ -182,6 +182,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
         return MACRO( T(LEFT), END); // clear the selection
       }
     } else { // on release
+      // nothing
     }
     break;
 
@@ -197,7 +198,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       mode |= _BV(VISUALMODE_BIT); // turn on visual mode
       xprintf("visual line [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
 
-      layer_off(LAYER_NORMAL_SHIFT);
+      layer_off(LAYER_NORMAL_SHIFT); // the layer that VISUALLINEMODE is invoked from
       layer_on(LAYER_VISUAL_MODE);
     }
     break;
@@ -209,15 +210,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       mode &= ~(_BV(VISUALMODE_BIT)); // turn off visual mode
       xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
 
-      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-        layer_on(LAYER_VISUAL_MODE);
-      }
-      else {
-        layer_off(LAYER_VISUAL_MODE);
-        default_layer_set(LAYER_COLEMAK); // exit normal mode
-        mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
-        return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
-      }
+      layer_off(LAYER_VISUAL_MODE);
+      default_layer_set(LAYER_COLEMAK); // exit normal mode
+      mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT)); // copied text is not an entire line
+      return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
     }
     break;
 
@@ -228,13 +224,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       mode &= ~(_BV(VISUALMODE_BIT)); // turn off visual mode
       xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
 
-      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-        layer_on(LAYER_VISUAL_MODE);
-      }
-      else {
-        layer_off(LAYER_VISUAL_MODE);
-        return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
-      }
+      layer_off(LAYER_VISUAL_MODE);
+      return MACRO( D(LCTRL), T(C), U(LCTRL), END); // copy the selection
     }
     break;
 
@@ -246,13 +237,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       mode &= ~(_BV(VISUALMODE_BIT)); // turn off visual mode
       xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
 
-      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-        layer_on(LAYER_VISUAL_MODE);
-      }
-      else {
-        layer_off(LAYER_VISUAL_MODE);
-        return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
-      }
+      layer_off(LAYER_VISUAL_MODE);
+      return MACRO( D(LCTRL), T(X), U(LCTRL), END); // cut the selection
     }
     break;
 
@@ -263,13 +249,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
       mode &= ~(_BV(VISUALMODE_BIT)); // turn off visual mode
       xprintf("visual [mode: %u]\n", mode & _BV(VISUALMODE_BIT));
 
-      if (mode & _BV(VISUALMODE_BIT)) { // if first bit is set
-        layer_on(LAYER_VISUAL_MODE);
-      }
-      else {
-        layer_off(LAYER_VISUAL_MODE);
-        return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
-      }
+      layer_off(LAYER_VISUAL_MODE);
+      return MACRO( D(LCTRL), T(V), U(LCTRL), END); // paste the selection
     }
     break;
 
@@ -277,6 +258,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(LBRC), U(LCTRL), END);
     } else { // on release
+      // nothing
     }
     break;
 
@@ -284,6 +266,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(RBRC), U(LCTRL), END);
     } else { // on release
+      // nothing
     }
     break;
 
@@ -291,6 +274,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(LBRC), U(LCTRL), END);
     } else { // on release
+      // nothing
     }
     break;
 
@@ -298,6 +282,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(RBRC), U(LCTRL), END);
     } else { // on release
+      // nothing
     }
     break;
 
@@ -395,6 +380,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                       END);
       }
     } else { // on release
+      // nothing
     }
     break;
 
@@ -411,6 +397,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
                       END);
       }
     } else { // on release
+      // nothing
     }
     break;
 
