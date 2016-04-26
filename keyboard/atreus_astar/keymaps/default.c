@@ -149,7 +149,8 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   // mode &= ~(_BV(LASTDELETE_ENTIRE_LINE_BIT));
 
   xprintf("------------\n");
-  xprintf("mode: ");
+
+  xprintf("mode bits: ");
   xprintf("%d%d%d%d%d%d%d%d",
           (mode & 0x080 ? 1 : 0), \
           (mode & 0x040 ? 1 : 0), \
@@ -165,7 +166,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   xprintf("key col: %u\n", record->event.key.col);
   xprintf("pressed: %u\n", record->event.pressed);
 
-  xprintf("%08lX(%u)\n", layer_state, biton32(layer_state));
+  xprintf("layer: %08lX(%u)\n", layer_state, biton32(layer_state));
 
   switch (id) {
   case VISUALMODE:
