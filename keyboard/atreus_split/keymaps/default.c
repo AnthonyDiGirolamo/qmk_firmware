@@ -42,6 +42,7 @@ enum macro_id {
   VISUALINDENT,
   UNINDENT,
   INDENT,
+  DOTREPEAT,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -90,7 +91,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NORMAL_MODE] = KEYMAP(
   KC_NO,             LCTL(KC_RIGHT), KC_NO,                   M(PASTE),      KC_NO,                   /*      */     KC_NO,                  KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        KC_NO,           \
   DF(LAYER_COLEMAK), LCTL(KC_Y),     KC_NO,                   KC_NO,         TG(LAYER_DELETE_MOTION), /*      */     KC_LEFT,                KC_DOWN,  KC_UP,         DF(LAYER_COLEMAK), M(NEWLINEBELOW), \
-  KC_NO,             KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */     KC_NO,                  KC_NO,    KC_NO,         KC_NO,             M(SEARCH),       \
+  KC_NO,             KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */     KC_NO,                  KC_NO,    KC_NO,         M(DOTREPEAT),      M(SEARCH), \
   KC_NO,             KC_NO,          KC_NO,                   KC_NO,         MO(LAYER_NORMAL_SHIFT),  KC_ESC, KC_NO, MO(LAYER_NORMAL_SHIFT), KC_NO,    LCTL(S(KC_8)), KC_NO,             KC_TRNS),
   // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
@@ -101,16 +102,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    LCTL(S(KC_7)),      KC_NO,                     KC_NO),
 
 [LAYER_VISUAL_MODE] = KEYMAP(
-  KC_NO,  LCTL(S(KC_RIGHT)),  KC_NO,            M(VISUALPASTE),  KC_NO,                   /*              */      KC_NO,                   S(KC_RIGHT),  KC_NO,              M(VISUALYANK),      KC_NO,  \
-  KC_NO,  KC_NO,              KC_NO,            KC_NO,           M(VISUALDELETE),         /*              */      S(KC_LEFT),              S(KC_DOWN),   S(KC_UP),           KC_NO,              KC_NO,  \
-  KC_NO,  M(VISUALDELETE),    M(VISUALCHANGE),  M(VISUALMODE),   LCTL(S(KC_LEFT)),        /*              */      KC_NO,                   KC_NO,        LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),  KC_NO,  \
-  KC_NO,  KC_NO,              KC_NO,            KC_NO,           MO(LAYER_VISUAL_SHIFT),  M(VISUALMODE),  KC_NO,  MO(LAYER_VISUAL_SHIFT),  KC_NO,        LCTL(S(KC_8)),      KC_NO,              KC_NO),
+  KC_NO,  LCTL(S(KC_RIGHT)),  KC_NO,            M(VISUALPASTE),  KC_NO,                   /*              */      KC_NO,                   S(KC_RIGHT),  KC_NO,          M(VISUALYANK),  KC_NO,  \
+  KC_NO,  KC_NO,              KC_NO,            KC_NO,           M(VISUALDELETE),         /*              */      S(KC_LEFT),              S(KC_DOWN),   S(KC_UP),       KC_NO,          KC_NO,  \
+  KC_NO,  M(VISUALDELETE),    M(VISUALCHANGE),  M(VISUALMODE),   LCTL(S(KC_LEFT)),        /*              */      KC_NO,                   KC_NO,        KC_NO,          KC_NO,          KC_NO,  \
+  KC_NO,  KC_NO,              KC_NO,            KC_NO,           MO(LAYER_VISUAL_SHIFT),  M(VISUALMODE),  KC_NO,  MO(LAYER_VISUAL_SHIFT),  KC_NO,        LCTL(S(KC_8)),  KC_NO,          KC_NO),
 
 [LAYER_VISUAL_SHIFT] = KEYMAP(
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,          KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  LCTL(S(KC_7)),  KC_NO,  KC_NO),
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,              KC_NO,              KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,              KC_NO,              KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),  KC_NO,  \
+  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  LCTL(S(KC_7)),      KC_NO,              KC_NO),
 
 [LAYER_DELETE_MOTION] = KEYMAP(
   KC_NO,  M(DELETEWORD),  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
@@ -140,6 +141,7 @@ enum mode_ids {
 // Macro definition
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   static uint8_t mode;
+  static uint8_t last_action;
 
   // check if bit is set
   // if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT))
@@ -167,6 +169,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
   xprintf("pressed: %u\n", record->event.pressed);
 
   xprintf("layer: %08lX(%u)\n", layer_state, biton32(layer_state));
+
+  if (id == DOTREPEAT && last_action > 0)
+    id = last_action;
 
   switch (id) {
   case VISUALMODE:
@@ -272,6 +277,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case UNINDENT:
+    last_action = id;
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(LBRC), U(LCTRL), END);
     } else { // on release
@@ -280,6 +286,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case INDENT:
+    last_action = id;
     if (record->event.pressed) { // on press
       return MACRO( D(LCTRL), T(RBRC), U(LCTRL), END);
     } else { // on release
@@ -357,6 +364,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case DELETELINE:
+    last_action = id;
     if (record->event.pressed) { // on press
       // select the first line and cut
       return MACRO( T(HOME), D(LSHIFT), T(DOWN), U(LSHIFT),
@@ -369,6 +377,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case PASTE:
+    last_action = id;
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
         return MACRO( T(HOME), T(DOWN), D(LCTL), T(V), U(LCTL), // move down one line then paste
@@ -386,6 +395,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case SHIFTPASTE:
+    last_action = id;
     if (record->event.pressed) { // on press
       if (mode & _BV(LASTDELETE_ENTIRE_LINE_BIT)) { // if last delete/yank was the whole line
         return MACRO( T(HOME), D(LCTL), T(V), U(LCTL),
@@ -403,6 +413,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case DELETEWORD:
+    last_action = id;
     if (record->event.pressed) { // on press
       return MACRO( D(LCTL), D(LSHIFT), T(RIGHT), U(LCTL), U(LSHIFT),
                     D(LCTL), T(X), U(LCTL),
@@ -414,6 +425,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
     break;
 
   case DELETEINNERWORD:
+    last_action = id;
     if (record->event.pressed) { // on press
       return MACRO( D(LCTL), T(LEFT),
                     D(LSHIFT), T(RIGHT), U(LCTL),
