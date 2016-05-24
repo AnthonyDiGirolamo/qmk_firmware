@@ -89,17 +89,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Global Normal Mode
 
 [LAYER_NORMAL_MODE] = KEYMAP(
-  KC_NO,             LCTL(KC_RIGHT), KC_NO,                   M(PASTE),      KC_NO,                   /*      */     KC_NO,                  KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        KC_NO,           \
-  DF(LAYER_COLEMAK), LCTL(KC_Y),     KC_NO,                   KC_NO,         TG(LAYER_DELETE_MOTION), /*      */     KC_LEFT,                KC_DOWN,  KC_UP,         DF(LAYER_COLEMAK), M(NEWLINEBELOW), \
-  KC_NO,             KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */     KC_NO,                  KC_NO,    KC_NO,         M(DOTREPEAT),      M(SEARCH), \
-  KC_NO,             KC_NO,          KC_NO,                   KC_NO,         MO(LAYER_NORMAL_SHIFT),  KC_ESC, KC_NO, MO(LAYER_NORMAL_SHIFT), KC_NO,    LCTL(S(KC_8)), KC_NO,             KC_TRNS),
+  KC_NO,              LCTL(KC_RIGHT),  KC_NO,                    M(PASTE),       LCTL(KC_HOME),            /*       */      KC_NO,                   KC_RIGHT,  LCTL(KC_Z),     LCTL(KC_C),         KC_NO,            \
+  DF(LAYER_COLEMAK),  LCTL(KC_Y),      KC_NO,                    KC_NO,          TG(LAYER_DELETE_MOTION),  /*       */      KC_LEFT,                 KC_DOWN,   KC_UP,          DF(LAYER_COLEMAK),  M(NEWLINEBELOW),  \
+  KC_NO,              KC_DEL,          TG(LAYER_CHANGE_MOTION),  M(VISUALMODE),  LCTL(KC_LEFT),            /*       */      KC_NO,                   KC_NO,     KC_NO,          M(DOTREPEAT),       M(SEARCH),        \
+  KC_NO,              KC_NO,           KC_NO,                    KC_NO,          MO(LAYER_NORMAL_SHIFT),   KC_ESC,  KC_NO,  MO(LAYER_NORMAL_SHIFT),  KC_NO,     LCTL(S(KC_8)),  KC_NO,              KC_TRNS),
   // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT] = KEYMAP(
-  KC_NO,               KC_TRNS,  KC_NO,  M(SHIFTPASTE),      KC_NO,    /*      */      KC_NO,    KC_TRNS,  KC_NO,              KC_NO,                     KC_NO,            \
-  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,            M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
-  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*      */      KC_NO,    KC_NO,    LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),         KC_NO,            \
-  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    LCTL(S(KC_7)),      KC_NO,                     KC_NO),
+  KC_NO,               KC_TRNS,  KC_NO,  M(SHIFTPASTE),      LCTL(KC_END),   /*      */      KC_NO,    KC_TRNS,  KC_NO,              KC_NO,                     KC_NO, \
+  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,          /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,            M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
+  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,        /*      */      KC_NO,    KC_NO,    LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),         KC_NO,            \
+  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,        KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    LCTL(S(KC_7)),      KC_NO,                     KC_NO),
 
 [LAYER_VISUAL_MODE] = KEYMAP(
   KC_NO,  LCTL(S(KC_RIGHT)),  KC_NO,            M(VISUALPASTE),  KC_NO,                   /*              */      KC_NO,                   S(KC_RIGHT),  KC_NO,          M(VISUALYANK),  KC_NO,  \
