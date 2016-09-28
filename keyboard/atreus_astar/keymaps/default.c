@@ -1,5 +1,6 @@
 #include "atreus_astar.h"
 #include "action_layer.h"
+#include "backlight.h"
 
 enum layer_id {
   LAYER_COLEMAK,
@@ -43,6 +44,14 @@ enum macro_id {
   UNINDENT,
   INDENT,
   DOTREPEAT,
+  RGBLED_TOGGLE,
+  RGBLED_STEP_MODE,
+  RGBLED_INCREASE_HUE,
+  RGBLED_DECREASE_HUE,
+  RGBLED_INCREASE_SAT,
+  RGBLED_DECREASE_SAT,
+  RGBLED_INCREASE_VAL,
+  RGBLED_DECREASE_VAL,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -81,10 +90,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_FN2),
 
 [LAYER_MOUSEMACRO] = KEYMAP(
-  KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-  KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*                      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8),
+  KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_FN13,  KC_FN14, KC_FN15, KC_FN16, KC_FN17,  \
+  KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*                      */      KC_FN18,  KC_NO,  KC_FN10,  KC_NO,  KC_NO,  \
+  KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*                      */      KC_FN19,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
+  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_FN20,  KC_NO,  KC_NO,    KC_NO,  KC_FN8),
 
 // Global Normal Mode
 
@@ -542,11 +551,63 @@ const uint16_t PROGMEM fn_actions[] = {
   [10] = ACTION_MACRO(ECHOH),
   [11] = ACTION_DEFAULT_LAYER_SET(0),
   [12] = ACTION_DEFAULT_LAYER_SET(1),
+  [13]  = ACTION_FUNCTION(RGBLED_TOGGLE),
+  [14]  = ACTION_FUNCTION(RGBLED_STEP_MODE),
+  [15]  = ACTION_FUNCTION(RGBLED_INCREASE_HUE),
+  [16]  = ACTION_FUNCTION(RGBLED_DECREASE_HUE),
+  [17]  = ACTION_FUNCTION(RGBLED_INCREASE_SAT),
+  [18]  = ACTION_FUNCTION(RGBLED_DECREASE_SAT),
+  [19]  = ACTION_FUNCTION(RGBLED_INCREASE_VAL),
+  [20]  = ACTION_FUNCTION(RGBLED_DECREASE_VAL),
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
   if (id == BOOTLOADER) {
     bootloader();
+  }
+  switch (id) {
+    case RGBLED_TOGGLE:
+      //led operations
+      if (record->event.pressed) {
+        rgblight_toggle();
+      }
+
+      break;
+    case RGBLED_INCREASE_HUE:
+      if (record->event.pressed) {
+        rgblight_increase_hue();
+      }
+      break;
+    case RGBLED_DECREASE_HUE:
+      if (record->event.pressed) {
+        rgblight_decrease_hue();
+      }
+      break;
+    case RGBLED_INCREASE_SAT:
+      if (record->event.pressed) {
+        rgblight_increase_sat();
+      }
+      break;
+    case RGBLED_DECREASE_SAT:
+      if (record->event.pressed) {
+        rgblight_decrease_sat();
+      }
+      break;
+      case RGBLED_INCREASE_VAL:
+        if (record->event.pressed) {
+          rgblight_increase_val();
+        }
+        break;
+      case RGBLED_DECREASE_VAL:
+        if (record->event.pressed) {
+          rgblight_decrease_val();
+        }
+        break;
+      case RGBLED_STEP_MODE:
+        if (record->event.pressed) {
+          rgblight_step();
+        }
+        break;
   }
 }

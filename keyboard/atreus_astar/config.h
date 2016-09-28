@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT_ID      0x6060
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    Technomancy
-#define PRODUCT         QMKAtreus
+#define PRODUCT         QMKAtreus RGB
 #define DESCRIPTION     q.m.k. keyboard firmware for Atreus
 
 /* key matrix size */
@@ -36,11 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Change this to how you wired your keyboard
 // COLS: Left to right, ROWS: Top to bottom
 
-// PCB FLIPPED
-// #define COLS (int []){ D7, C6, B5, B4, E6, D4, B6, F6, F7, D6, B7 }
-
-#define COLS (int []){ B7, D6, F7, F6, B6, D4, E6, B4, B5, C6, D7 }
+/* #define COLS (int []){ B7, D6, F7, F6, B6, D4, E6, B4, B5, C6, D7 } */
 #define ROWS (int []){ D0, D1, D3, D2 }
+
+/* #ifdef FLIPPED */
+#define COLS (int []){ D7, C6, B5, B4, E6, D4, B6, F6, F7, D6, B7 }
+/* #endif */
 
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION COL2ROW
@@ -90,5 +91,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_TIME_TO_MAX 30
 #define MOUSEKEY_WHEEL_MAX_SPEED 7
 #define MOUSEKEY_WHEEL_TIME_TO_MAX 20
+
+#define ws2812_PORTREG  PORTB
+#define ws2812_DDRREG   DDRB
+#define ws2812_pin PB2
+#define RGBLED_NUM 1     // Number of LEDs
+#define RGBLIGHT_HUE_STEP 10
+#define RGBLIGHT_SAT_STEP 17
+#define RGBLIGHT_VAL_STEP 17
 
 #endif

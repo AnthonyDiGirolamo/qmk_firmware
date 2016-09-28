@@ -126,6 +126,7 @@ NKRO_ENABLE = yes               # USB Nkey Rollover - if this doesn't work, see 
 # UNICODE_ENABLE = YES          # Unicode
 # BLUETOOTH_ENABLE = yes # Enable Bluetooth with the Adafruit EZ-Key HID
 
+RGBLIGHT_ENABLE = yes
 
 # Optimize size but this may cause error "relocation truncated to fit"
 #EXTRALDFLAGS = -Wl,--relax
@@ -136,4 +137,3 @@ VPATH += $(TOP_DIR)
 VPATH += $(TMK_DIR)
 
 include $(TOP_DIR)/quantum/quantum.mk
-
