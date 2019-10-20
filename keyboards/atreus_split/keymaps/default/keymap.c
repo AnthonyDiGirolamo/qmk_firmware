@@ -78,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_INS,   KC_F7,    KC_F8,    KC_F9,    KC_F10,   /*        */        KC_HOME,  KC_RGHT,  KC_END,   KC_PGUP,  KC_PSCR,   \
   KC_DEL,   KC_F4,    KC_F5,    KC_F6,    KC_F11,   /*        */        KC_LEFT,  KC_DOWN,  KC_UP,    KC_PGDN,  KC_PAUSE,  \
   KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
-  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_FN2),
+  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  RESET),
 
 [LAYER_MOUSEMACRO] = KEYMAP(
   KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
