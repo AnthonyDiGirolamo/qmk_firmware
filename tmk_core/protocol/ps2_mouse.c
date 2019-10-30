@@ -68,9 +68,12 @@ void ps2_mouse_init(void) {
 
 __attribute__((weak)) void ps2_mouse_init_user(void) {}
 
+__attribute__((weak)) void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {}
+
 void ps2_mouse_task(void) {
     static uint8_t buttons_prev = 0;
     extern int     tp_buttons;
+    uint16_t current_timer = timer_read();
 
     /* receives packet from mouse */
     uint8_t rcv;
@@ -103,8 +106,10 @@ void ps2_mouse_task(void) {
         ps2_mouse_print_report(&mouse_report);
 #endif
         host_mouse_send(&mouse_report);
+
     }
 
+    ps2_mouse_task_user(&mouse_report, current_timer);
     ps2_mouse_clear_report(&mouse_report);
 }
 
