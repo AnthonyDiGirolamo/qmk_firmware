@@ -88,10 +88,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  RESET),
 
 [LAYER_MOUSEMACRO] = KEYMAP(
-  KC_FN10,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-  KC_FN11,  KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*                      */      KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,    KC_FN9,  KC_BTN3,  KC_NO,    /*                      */      KC_NO,  KC_MS_BTN1,  KC_MS_BTN2,  KC_MS_BTN3,   KC_MS_BTN4,  \
-  KC_TRNS,  KC_NO,    KC_NO,    KC_TRNS,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    KC_NO,  KC_FN8),
+    KC_FN10, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_U, /*                     */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_D, /*                     */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_FN9,  KC_TRNS, KC_TRNS, /*                     */       KC_TRNS, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, DF(LAYER_NORMAL_MODE), KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_NO),
 
 // Global Normal Mode
 
@@ -544,24 +544,25 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
             MACRO_NONE);
   */
 
-  case RIGHT_FN_MACRO:
-    if (record->event.pressed) { // on press
-      // normal modifier hold
-      layer_on(LAYER_SYMBOLS);
-    } else { // on release
-      // normal modifier release
-      layer_off(LAYER_SYMBOLS);
+  //   // double click lock
+  // case RIGHT_FN_MACRO:
+  //   if (record->event.pressed) { // on press
+  //     // normal modifier hold
+  //     layer_on(LAYER_SYMBOLS);
+  //   } else { // on release
+  //     // normal modifier release
+  //     layer_off(LAYER_SYMBOLS);
 
-      // if double tap on right FN key - lock LAYER_MOUSEMACRO
-      if (last_action_count >= 3 && last_action == RIGHT_FN_MACRO) {
-        layer_on(LAYER_MOUSEMACRO);
-      }
-      else {
-        layer_off(LAYER_MOUSEMACRO);
-      }
-    }
-    last_action = id;
-    break;
+  //     // if double tap on right FN key - lock LAYER_MOUSEMACRO
+  //     if (last_action_count >= 3 && last_action == RIGHT_FN_MACRO) {
+  //       layer_on(LAYER_MOUSEMACRO);
+  //     }
+  //     else {
+  //       layer_off(LAYER_MOUSEMACRO);
+  //     }
+  //   }
+  //   last_action = id;
+  //   break;
 
   }
 
@@ -574,10 +575,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM fn_actions[] = {
   /* [0] = ACTION_LAYER_TAP_TOGGLE(2), // KC_FN0 */
   /* [1] = ACTION_LAYER_TAP_TOGGLE(3), // KC_FN1 */
-  /* [0] = ACTION_LAYER_MOMENTARY(2), // KC_FN0 */
+  [0] = ACTION_LAYER_MOMENTARY(2), // KC_FN0
   /* [1] = ACTION_LAYER_MOMENTARY(3), // KC_FN1 */
 
-  [0] = ACTION_MACRO(RIGHT_FN_MACRO), // KC_FN0
+  /* [0] = ACTION_MACRO(RIGHT_FN_MACRO), // KC_FN0 */
   [1] = ACTION_LAYER_MOMENTARY(3), // KC_FN1
   [2] = ACTION_FUNCTION(BOOTLOADER), // KC_FN2
 
@@ -642,7 +643,6 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 }
 
-/*
 void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
   static uint16_t last_mouse_millis;
   static uint8_t mouse_layer_on = 0;
@@ -663,7 +663,6 @@ void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
     mouse_layer_on = 0;
   }
 }
-*/
 
 #ifdef PS2_MOUSE_ENABLE
   void ps2_mouse_init_user() {
