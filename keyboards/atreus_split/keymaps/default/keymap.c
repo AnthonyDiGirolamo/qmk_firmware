@@ -12,6 +12,7 @@ enum layer_id {
   LAYER_QWERTY,
   LAYER_SYMBOLS,
   LAYER_FNARROWS,
+  LAYER_TRACKPOINT,
   LAYER_MOUSEMACRO,
   LAYER_NORMAL_MODE,
   LAYER_NORMAL_SHIFT,
@@ -87,11 +88,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  RESET),
 
+[LAYER_TRACKPOINT] = KEYMAP(
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_U, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_D, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*       */       KC_TRNS, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_NO),
+
 [LAYER_MOUSEMACRO] = KEYMAP(
-    KC_FN10, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_U, /*                     */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_D, /*                     */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
-    KC_TRNS, KC_TRNS, KC_FN9,  KC_TRNS, KC_TRNS, /*                     */       KC_TRNS, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, DF(LAYER_NORMAL_MODE), KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_NO),
+    KC_FN10, KC_NO, KC_NO,  KC_NO, KC_WH_U, /*                     */     KC_NO, KC_NO,      KC_NO,      KC_NO,      KC_NO,      \
+    KC_NO,   KC_NO, KC_NO,  KC_NO, KC_WH_D, /*                     */     KC_NO, KC_NO,      KC_NO,      KC_NO,      KC_NO,      \
+    KC_NO,   KC_NO, KC_FN9, KC_NO, KC_NO,   /*                     */     KC_NO, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
+    KC_NO,   KC_NO, KC_NO,  KC_NO, KC_NO,   DF(LAYER_NORMAL_MODE), KC_NO, KC_NO, KC_NO,      KC_NO,      KC_NO,      KC_NO),
 
 // Global Normal Mode
 
@@ -575,11 +582,11 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 const uint16_t PROGMEM fn_actions[] = {
   /* [0] = ACTION_LAYER_TAP_TOGGLE(2), // KC_FN0 */
   /* [1] = ACTION_LAYER_TAP_TOGGLE(3), // KC_FN1 */
-  [0] = ACTION_LAYER_MOMENTARY(2), // KC_FN0
+  [0] = ACTION_LAYER_MOMENTARY(LAYER_SYMBOLS), // KC_FN0
   /* [1] = ACTION_LAYER_MOMENTARY(3), // KC_FN1 */
 
   /* [0] = ACTION_MACRO(RIGHT_FN_MACRO), // KC_FN0 */
-  [1] = ACTION_LAYER_MOMENTARY(3), // KC_FN1
+  [1] = ACTION_LAYER_MOMENTARY(LAYER_FNARROWS), // KC_FN1
   [2] = ACTION_FUNCTION(BOOTLOADER), // KC_FN2
 
   [3] = ACTION_MODS_TAP_KEY(MOD_LCTL, KC_ESC), // KC_FN3
@@ -588,10 +595,10 @@ const uint16_t PROGMEM fn_actions[] = {
   [6] = ACTION_MODS_TAP_KEY(MOD_LSFT, KC_BSPC), // KC_FN6
 
   [7] = ACTION_MODS_TAP_KEY(MOD_LGUI|MOD_LCTL|MOD_LALT, KC_ESC), // KC_FN7
-  [8] = ACTION_LAYER_TAP_KEY(4, KC_ENT), // KC_FN8
+  [8] = ACTION_LAYER_TAP_KEY(LAYER_MOUSEMACRO, KC_ENT), // KC_FN8
 
-  [9] = ACTION_DEFAULT_LAYER_SET(0), // KC_FN9 -> KC_C: LAYER_COLEMAK
-  [10] = ACTION_DEFAULT_LAYER_SET(1), // KC_FN10 -> KC_Q: LAYER_QWERTY
+  [9] = ACTION_DEFAULT_LAYER_SET(LAYER_COLEMAK), // KC_FN9 -> KC_C: LAYER_COLEMAK
+  [10] = ACTION_DEFAULT_LAYER_SET(LAYER_QWERTY), // KC_FN10 -> KC_Q: LAYER_QWERTY
 
   [11] = ACTION_MACRO(ECHOH), // KC_FN11
   /* [12] = ACTION_MACRO(GITCOMMIT), // KC_FN12 */
@@ -650,7 +657,7 @@ void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
   if (mouse_report->x || mouse_report->y || mouse_report->v || mouse_report->h) {
     if (time-last_mouse_millis < 1000 && mouse_layer_on == 0) {
       xprintf("mouse layer on: time %d %d\n", time-last_mouse_millis, mouse_layer_on);
-      layer_on(LAYER_MOUSEMACRO);
+      layer_on(LAYER_TRACKPOINT);
       mouse_layer_on = 1;
     }
 
@@ -659,7 +666,7 @@ void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
   }
   else if (time-last_mouse_millis >= 1000 && mouse_layer_on == 1) {
     xprintf("mouse layer off: time %d %d\n", time-last_mouse_millis, mouse_layer_on);
-    layer_off(LAYER_MOUSEMACRO);
+    layer_off(LAYER_TRACKPOINT);
     mouse_layer_on = 0;
   }
 }
