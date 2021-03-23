@@ -89,8 +89,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  RESET),
 
 [LAYER_TRACKPOINT] = KEYMAP(
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_U, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
-    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_WH_D, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*       */       KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    \
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*       */       KC_TRNS, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_NO),
 
@@ -656,7 +656,7 @@ void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
 
   if (mouse_report->x || mouse_report->y || mouse_report->v || mouse_report->h) {
     if (time-last_mouse_millis < 1000 && mouse_layer_on == 0) {
-      xprintf("mouse layer on: time %d %d\n", time-last_mouse_millis, mouse_layer_on);
+      /* xprintf("mouse layer on: time %d %d\n", time-last_mouse_millis, mouse_layer_on); */
       layer_on(LAYER_TRACKPOINT);
       mouse_layer_on = 1;
     }
@@ -665,7 +665,7 @@ void ps2_mouse_task_user(report_mouse_t *mouse_report, uint16_t time) {
     last_mouse_millis = time;
   }
   else if (time-last_mouse_millis >= 1000 && mouse_layer_on == 1) {
-    xprintf("mouse layer off: time %d %d\n", time-last_mouse_millis, mouse_layer_on);
+    /* xprintf("mouse layer off: time %d %d\n", time-last_mouse_millis, mouse_layer_on); */
     layer_off(LAYER_TRACKPOINT);
     mouse_layer_on = 0;
   }
