@@ -8,3 +8,6 @@
 #define MOUSEKEY_TIME_TO_MAX 255
 #define MOUSEKEY_WHEEL_MAX_SPEED 7
 #define MOUSEKEY_WHEEL_TIME_TO_MAX 255
+
+#define ___ KC_NO
+#define __v KC_TRNS

@@ -3,6 +3,7 @@
 enum layer_id {
   LAYER_COLEMAK,
   LAYER_QWERTY,
+  LAYER_GAMING,
   LAYER_SYMBOLS,
   LAYER_FNARROWS,
   LAYER_MOUSEMACRO,
@@ -44,23 +45,31 @@ enum macro_id {
   DOTREPEAT,
 };
 
+#define HYPER_ESC MT(MOD_LGUI|MOD_LCTL|MOD_LALT, KC_ESC)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_COLEMAK] = LAYOUT(
-  KC_Q,    KC_W,     KC_F,    KC_P,    KC_G,    /*       */       KC_J,    KC_L,    KC_U,     KC_Y,     KC_SCLN,  \
-  KC_A,    KC_R,     KC_S,    KC_T,    KC_D,    /*       */       KC_H,    KC_N,    KC_E,     KC_I,     KC_O,     \
-  KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_K,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
-  KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),
+  KC_Q,      KC_W,    KC_F,   KC_P,               KC_G,                 /*                   */                   KC_J,                KC_L,              KC_U,    KC_Y,    KC_SCLN, \
+  KC_A,      KC_R,    KC_S,   KC_T,               KC_D,                 /*                   */                   KC_H,                KC_N,              KC_E,    KC_I,    KC_O,    \
+  KC_Z,      KC_X,    KC_C,   KC_V,               KC_B,                 /*                   */                   KC_K,                KC_M,              KC_COMM, KC_DOT,  KC_SLSH, \
+  HYPER_ESC, KC_LGUI, KC_TAB, MO(LAYER_FNARROWS), MT(MOD_LSFT,KC_BSPC), MT(MOD_LCTL,KC_ESC), MT(MOD_LALT,KC_ENT), MT(MOD_RSFT,KC_SPC), MO(LAYER_SYMBOLS), KC_MINS, KC_QUOT, LT(LAYER_MOUSEMACRO,KC_ENT)),
 
 // Q  W  E  R  T      Y  U  I     O    P
 // A  S  D  F  G      H  J  K     L    SCLN
 // Z  X  C  V  B      N  M  COMM  DOT  SLSH
 
 [LAYER_QWERTY] = LAYOUT(
-  KC_Q,    KC_W,     KC_E,    KC_R,    KC_T,    /*       */       KC_Y,    KC_U,    KC_I,     KC_O,     KC_P,     \
-  KC_A,    KC_S,     KC_D,    KC_F,    KC_G,    /*       */       KC_H,    KC_J,    KC_K,     KC_L,     KC_SCLN,  \
-  KC_Z,    KC_X,     KC_C,    KC_V,    KC_B,    /*       */       KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_SLSH,  \
-  KC_FN7,  KC_LGUI,  KC_TAB,  KC_FN1,  KC_FN6,  KC_FN3,  KC_FN4,  KC_FN5,  KC_FN0,  KC_MINS,  KC_QUOT,  KC_FN8),
+                        KC_Q, KC_W, KC_E, KC_R, KC_T, /*   */   KC_Y, KC_U, KC_I,    KC_O,   KC_P,    \
+                        KC_A, KC_S, KC_D, KC_F, KC_G, /*   */   KC_H, KC_J, KC_K,    KC_L,   KC_SCLN, \
+                        KC_Z, KC_X, KC_C, KC_V, KC_B, /*   */   KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, \
+                        __v,  __v,  __v,  __v,  __v,  __v, __v, __v,  __v,  __v,     __v,    __v      ),
+
+[LAYER_GAMING] = LAYOUT(
+                        KC_TAB,    KC_Q, KC_W, KC_E, KC_R,   /*        */       KC_Y, KC_U, KC_I,    KC_O,   KC_P,    \
+                        KC_LSHIFT, KC_A, KC_S, KC_D, KC_F,   /*        */       KC_H, KC_J, KC_K,    KC_L,   KC_SCLN, \
+                        KC_1,      KC_Z, KC_X, KC_C, KC_V,   /*        */       KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, \
+                        KC_ESC,    KC_2, KC_3, KC_4, KC_SPC, KC_LCTRL, KC_LALT, __v,  __v,  __v,     __v,    __v      ),
 
 // * 7 8 9 0  | [ ] # !
 // + 4 5 6 ~  @ ( ) ^ $
@@ -68,67 +77,67 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   0 .          - '
 
 [LAYER_SYMBOLS] = LAYOUT(
-  S(KC_8),    KC_7,  KC_8,    KC_9,     KC_0,         /*        */        S(KC_BSLS),  KC_LBRC,     KC_RBRC,     S(KC_3),     S(KC_1),  \
-  S(KC_EQL),  KC_4,  KC_5,    KC_6,     S(KC_GRAVE),  /*        */        S(KC_2),     S(KC_9),     S(KC_0),     S(KC_6),     S(KC_4),  \
-  KC_EQL,     KC_1,  KC_2,    KC_3,     KC_GRAVE,     /*        */        S(KC_7),     S(KC_LBRC),  S(KC_RBRC),  S(KC_5),     KC_BSLS,  \
-  KC_TRNS,    KC_0,  KC_DOT,  KC_TRNS,  KC_TRNS,      KC_TRNS,  KC_TRNS,  KC_TRNS,     KC_TRNS,     S(KC_MINS),  S(KC_QUOT),  KC_TRNS),
+                         S(KC_8),   KC_7, KC_8,   KC_9, KC_0,        /*   */   S(KC_BSLS), KC_LBRC,    KC_RBRC,    S(KC_3),    S(KC_1), \
+                         S(KC_EQL), KC_4, KC_5,   KC_6, S(KC_GRAVE), /*   */   S(KC_2),    S(KC_9),    S(KC_0),    S(KC_6),    S(KC_4), \
+                         KC_EQL,    KC_1, KC_2,   KC_3, KC_GRAVE,    /*   */   S(KC_7),    S(KC_LBRC), S(KC_RBRC), S(KC_5),    KC_BSLS, \
+                         __v,       KC_0, KC_DOT, __v,  __v,         __v, __v, __v,        __v,        S(KC_MINS), S(KC_QUOT), __v),
 
 [LAYER_FNARROWS] = LAYOUT(
-  KC_INS,   KC_F7,    KC_F8,    KC_F9,    KC_F10,   /*        */        KC_HOME,  KC_RGHT,  KC_END,   KC_PGUP,  KC_PSCR,   \
-  KC_DEL,   KC_F4,    KC_F5,    KC_F6,    KC_F11,   /*        */        KC_LEFT,  KC_DOWN,  KC_UP,    KC_PGDN,  KC_PAUSE,  \
-  KC_CAPS,  KC_F1,    KC_F2,    KC_F3,    KC_F12,   /*        */        KC_VOLD,  KC_VOLU,  KC_MUTE,  KC_F13,   KC_F14,    \
-  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  RESET),
+                          KC_INS,  KC_F7, KC_F8, KC_F9, KC_F10, /*   */   KC_HOME, KC_RGHT, KC_END,  KC_PGUP, KC_PSCR,  \
+                          KC_DEL,  KC_F4, KC_F5, KC_F6, KC_F11, /*   */   KC_LEFT, KC_DOWN, KC_UP,   KC_PGDN, KC_PAUSE, \
+                          KC_CAPS, KC_F1, KC_F2, KC_F3, KC_F12, /*   */   KC_VOLD, KC_VOLU, KC_MUTE, KC_F13,  KC_F14,   \
+                          __v,     __v,   __v,   __v,   __v,    __v, __v, __v,     __v,     __v,     __v,     RESET),
 
 [LAYER_MOUSEMACRO] = LAYOUT(
-  KC_FN12,  KC_BTN1,  KC_MS_U,  KC_BTN2,  KC_WH_U,  /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-  KC_NO,    KC_MS_L,  KC_MS_D,  KC_MS_R,  KC_WH_D,  /*                      */      KC_NO,  KC_NO,  KC_FN10,  KC_NO,  KC_NO,  \
-  KC_NO,    KC_NO,    KC_FN11,  KC_BTN3,  KC_NO,    /*                      */      KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_NO,  \
-  KC_TRNS,  KC_NO,    KC_NO,    KC_NO,    KC_BTN1,  DF(LAYER_NORMAL_MODE),  KC_NO,  KC_NO,  KC_NO,  KC_NO,    KC_NO,  KC_FN8),
+                            DF(LAYER_QWERTY), KC_BTN1, KC_MS_U,           KC_BTN2, KC_WH_U,          /*                     */   ___, ___,     ___,     ___,     ___,     \
+                            ___,              KC_MS_L, KC_MS_D,           KC_MS_R, KC_WH_D,          /*                     */   ___, ___,     KC_FN1,  ___,     ___,     \
+                            ___,              ___,     DF(LAYER_COLEMAK), KC_BTN3, DF(LAYER_GAMING), /*                     */   ___, KC_BTN1, KC_BTN2, KC_BTN3, KC_BTN4, \
+                            __v,              ___,     ___,               ___,     KC_BTN1,          DF(LAYER_NORMAL_MODE), ___, ___, KC_WH_L, KC_WH_R, ___,     LT(LAYER_MOUSEMACRO,KC_ENT)),
 
 // Global Normal Mode
 
 [LAYER_NORMAL_MODE] = LAYOUT(
-  KC_NO,             LCTL(KC_RIGHT), KC_NO,                   M(PASTE),      KC_NO,                   /*      */     KC_NO,                  KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        KC_NO,           \
-  DF(LAYER_COLEMAK), LCTL(KC_Y),     KC_NO,                   KC_NO,         TG(LAYER_DELETE_MOTION), /*      */     KC_LEFT,                KC_DOWN,  KC_UP,         DF(LAYER_COLEMAK), M(NEWLINEBELOW), \
-  KC_NO,             KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */     KC_NO,                  KC_NO,    KC_NO,         M(DOTREPEAT),      M(SEARCH), \
-  KC_NO,             KC_NO,          KC_NO,                   KC_NO,         MO(LAYER_NORMAL_SHIFT),  KC_ESC, KC_NO, MO(LAYER_NORMAL_SHIFT), KC_NO,    LCTL(S(KC_8)), KC_NO,             KC_TRNS),
-  // need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
+                             ___,               LCTL(KC_RIGHT), ___,                     M(PASTE),      ___,                     /*      */   ___,                    KC_RIGHT, LCTL(KC_Z),    LCTL(KC_C),        ___,             \
+                             DF(LAYER_COLEMAK), LCTL(KC_Y),     ___,                     ___,           TG(LAYER_DELETE_MOTION), /*      */   KC_LEFT,                KC_DOWN,  KC_UP,         DF(LAYER_COLEMAK), M(NEWLINEBELOW), \
+                             ___,               KC_DEL,         TG(LAYER_CHANGE_MOTION), M(VISUALMODE), LCTL(KC_LEFT),           /*      */   ___,                    ___,      ___,           M(DOTREPEAT),      M(SEARCH),       \
+                             ___,               ___,            ___,                     ___,           MO(LAYER_NORMAL_SHIFT),  KC_ESC, ___, MO(LAYER_NORMAL_SHIFT), ___,      LCTL(S(KC_8)), ___,               __v),
+// need FN8 or TRNS at the end here or LAYER_MOUSEMACRO ends up getting stuck
 
 [LAYER_NORMAL_SHIFT] = LAYOUT(
-  KC_NO,               KC_TRNS,  KC_NO,  M(SHIFTPASTE),      KC_NO,    /*      */      KC_NO,    KC_TRNS,  KC_NO,              KC_NO,                     KC_NO,            \
-  M(ENDOFLINEAPPEND),  KC_NO,    KC_NO,  KC_NO,              KC_NO,    /*      */      KC_TRNS,  KC_TRNS,  KC_TRNS,            M(BEGINNINGOFLINEINSERT),  M(NEWLINEABOVE),  \
-  KC_NO,               KC_NO,    KC_NO,  M(VISUALLINEMODE),  KC_TRNS,  /*      */      KC_NO,    KC_NO,    LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),         KC_NO,            \
-  KC_NO,               KC_NO,    KC_NO,  KC_NO,              KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,    LCTL(S(KC_7)),      KC_NO,                     KC_NO),
+                              ___,                __v, ___, M(SHIFTPASTE),     ___, /*   */   ___, __v, ___,               ___,                      ___,             \
+                              M(ENDOFLINEAPPEND), ___, ___, ___,               ___, /*   */   __v, __v, __v,               M(BEGINNINGOFLINEINSERT), M(NEWLINEABOVE), \
+                              ___,                ___, ___, M(VISUALLINEMODE), __v, /*   */   ___, ___, LCTL(KC_LBRACKET), LCTL(KC_RBRACKET),        ___,             \
+                              ___,                ___, ___, ___,               __v, ___, ___, __v, ___, LCTL(S(KC_7)),     ___,                      ___),
 
 [LAYER_VISUAL_MODE] = LAYOUT(
-  KC_NO,  LCTL(S(KC_RIGHT)),  KC_NO,            M(VISUALPASTE),  KC_NO,                   /*              */      KC_NO,                   S(KC_RIGHT),  KC_NO,          M(VISUALYANK),  KC_NO,  \
-  KC_NO,  KC_NO,              KC_NO,            KC_NO,           M(VISUALDELETE),         /*              */      S(KC_LEFT),              S(KC_DOWN),   S(KC_UP),       KC_NO,          KC_NO,  \
-  KC_NO,  M(VISUALDELETE),    M(VISUALCHANGE),  M(VISUALMODE),   LCTL(S(KC_LEFT)),        /*              */      KC_NO,                   KC_NO,        KC_NO,          KC_NO,          KC_NO,  \
-  KC_NO,  KC_NO,              KC_NO,            KC_NO,           MO(LAYER_VISUAL_SHIFT),  M(VISUALMODE),  KC_NO,  MO(LAYER_VISUAL_SHIFT),  KC_NO,        LCTL(S(KC_8)),  KC_NO,          KC_NO),
+                             ___, LCTL(S(KC_RIGHT)), ___,             M(VISUALPASTE), ___,                    /*             */   ___,                    S(KC_RIGHT), ___,           M(VISUALYANK), ___, \
+                             ___, ___,               ___,             ___,            M(VISUALDELETE),        /*             */   S(KC_LEFT),             S(KC_DOWN),  S(KC_UP),      ___,           ___, \
+                             ___, M(VISUALDELETE),   M(VISUALCHANGE), M(VISUALMODE),  LCTL(S(KC_LEFT)),       /*             */   ___,                    ___,         ___,           ___,           ___, \
+                             ___, ___,               ___,             ___,            MO(LAYER_VISUAL_SHIFT), M(VISUALMODE), ___, MO(LAYER_VISUAL_SHIFT), ___,         LCTL(S(KC_8)), ___,           ___),
 
 [LAYER_VISUAL_SHIFT] = LAYOUT(
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,              KC_NO,              KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  KC_NO,              KC_NO,              KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_NO,    /*      */      KC_NO,    KC_NO,  LCTL(KC_LBRACKET),  LCTL(KC_RBRACKET),  KC_NO,  \
-  KC_NO,  KC_NO,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_TRNS,  KC_NO,  LCTL(S(KC_7)),      KC_NO,              KC_NO),
+                              ___, ___, ___, ___, ___, /*   */   ___, ___, ___,               ___,               ___, \
+                              ___, ___, ___, ___, ___, /*   */   ___, ___, ___,               ___,               ___, \
+                              ___, ___, ___, ___, ___, /*   */   ___, ___, LCTL(KC_LBRACKET), LCTL(KC_RBRACKET), ___, \
+                              ___, ___, ___, ___, __v, ___, ___, __v, ___, LCTL(S(KC_7)),     ___,               ___),
 
 [LAYER_DELETE_MOTION] = LAYOUT(
-  KC_NO,  M(DELETEWORD),  KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,          KC_NO,  KC_NO,  M(DELETELINE),  /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,          KC_NO,  KC_NO,  KC_NO,          /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,          KC_NO,  KC_NO,  KC_TRNS,        TG(LAYER_DELETE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+                               ___, M(DELETEWORD), ___, ___, ___,           /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,           ___, ___, M(DELETELINE), /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,           ___, ___, ___,           /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,           ___, ___, __v,           TG(LAYER_DELETE_MOTION), ___, __v, ___, ___, ___, ___),
 
 /* [LAYER_DELETE_INNER_MOTION] = LAYOUT( */
-/*   KC_NO,  M(DELETEINNERWORD),  KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
-/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
-/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_NO,    /\*                              *\/      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \ */
-/*   KC_NO,  KC_NO,               KC_NO,  KC_NO,  KC_TRNS,  TG(LAYER_DELETE_INNER_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO), */
+/* ___, M(DELETEINNERWORD), ___, ___, ___, /\*                            *\/  ___, ___, ___, ___, ___,  \ */
+/* ___, ___,                ___, ___, ___, /\*                            *\/  ___, ___, ___, ___, ___,  \ */
+/* ___, ___,                ___, ___, ___, /\*                            *\/  ___, ___, ___, ___, ___,  \ */
+/* ___, ___,                ___, ___, __v, TG(LAYER_DELETE_INNER_MOTION), ___, __v, ___, ___, ___, ___), */
 
 [LAYER_CHANGE_MOTION] = LAYOUT(
-  KC_NO,  M(CHANGEINNERWORD),  KC_NO,          KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               KC_NO,          KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               M(CHANGELINE),  KC_NO,  KC_NO,    /*                        */      KC_NO,    KC_NO,  KC_NO,  KC_NO,  KC_NO,  \
-  KC_NO,  KC_NO,               KC_NO,          KC_NO,  KC_TRNS,  TG(LAYER_CHANGE_MOTION),  KC_NO,  KC_TRNS,  KC_NO,  KC_NO,  KC_NO,  KC_NO),
+                               ___, M(CHANGEINNERWORD), ___,           ___, ___, /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,                ___,           ___, ___, /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,                M(CHANGELINE), ___, ___, /*                       */   ___, ___, ___, ___, ___, \
+                               ___, ___,                ___,           ___, __v, TG(LAYER_CHANGE_MOTION), ___, __v, ___, ___, ___, ___),
 
 };
 
@@ -526,21 +535,9 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 
 
 const uint16_t PROGMEM fn_actions[] = {
-  /* [0] = ACTION_LAYER_TAP_TOGGLE(1), */
-  /* [1] = ACTION_LAYER_TAP_TOGGLE(2), */
-  [0] = ACTION_LAYER_MOMENTARY(2),
-  [1] = ACTION_LAYER_MOMENTARY(3),
-  /* [2] = ACTION_FUNCTION(BOOTLOADER), */
-  [3] = ACTION_MODS_TAP_KEY(MOD_LCTL, KC_ESC),
-  [4] = ACTION_MODS_TAP_KEY(MOD_LALT, KC_ENT),
-  [5] = ACTION_MODS_TAP_KEY(MOD_RSFT, KC_SPC),
-  [6] = ACTION_MODS_TAP_KEY(MOD_LSFT, KC_BSPC),
-  [7] = ACTION_MODS_TAP_KEY(MOD_LGUI|MOD_LCTL|MOD_LALT, KC_ESC),
-  [8] = ACTION_LAYER_TAP_KEY(4, KC_ENT),
-  [9] = ACTION_MACRO(GITCOMMIT),
-  [10] = ACTION_MACRO(ECHOH),
-  [11] = ACTION_DEFAULT_LAYER_SET(0),
-  [12] = ACTION_DEFAULT_LAYER_SET(1),
+  // these run action_get_macro() with the respective ids
+  [0] = ACTION_MACRO(GITCOMMIT),  // becomes keycode KC_FN0
+  [1] = ACTION_MACRO(ECHOH),  // becomes keycode KC_FN1
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)

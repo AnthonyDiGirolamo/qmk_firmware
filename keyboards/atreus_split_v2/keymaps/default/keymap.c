@@ -73,7 +73,7 @@ LAYOUT(
                             DF(LAYER_QWERTY), KC_BTN1, KC_MS_U,           KC_BTN2, KC_WH_U, __v, /*|*/ __v, ___, ___,     ___,     ___,     ___,     \
                             KC_FN0,           KC_MS_L, KC_MS_D,           KC_MS_R, KC_WH_D, __v, /*|*/ __v, ___, ___,     ___,     ___,     ___,     \
                             KC_FN1,           ___,     DF(LAYER_COLEMAK), KC_BTN3, ___,     __v, /*|*/ __v, ___, KC_BTN1, KC_BTN2, KC_BTN3, KC_BTN4, \
-                            ___,              ___,     ___,               ___,     ___,     __v, /*|*/ __v, ___, KC_WH_R, KC_WH_L, ___,     ___      ),
+                            ___,              ___,     ___,               ___,     ___,     __v, /*|*/ __v, ___, KC_WH_L, KC_WH_R, ___,     ___      ),
 };
 
 // Macro definition
